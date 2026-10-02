@@ -13,7 +13,6 @@ const SUPABASE_URL =
 const SUPABASE_KEY =
     "sb_publishable_WlwmZmHDCL7brx5vadiHZQ_C0ay61KZ";
 
-
 const supabaseClient =
     window.supabase.createClient(
         SUPABASE_URL,
@@ -86,22 +85,22 @@ const photoPreview =
     document.getElementById("photoPreview");
 
 const successPhotoPreview =
-    document.getElementById(
-        "successPhotoPreview"
-    );
+    document.getElementById("successPhotoPreview");
 
 const photoCanvas =
     document.getElementById("photoCanvas");
 
 const cameraContainer =
-    document.querySelector(
-        ".camera-container"
-    );
+    document.querySelector(".camera-container");
 
 const previewContainer =
-    document.querySelector(
-        ".preview-container"
-    );
+    document.querySelector(".preview-container");
+
+const cameraTopControls =
+    document.getElementById("cameraTopControls");
+
+const cameraBottomControls =
+    document.getElementById("cameraBottomControls");
 
 const timerOffButton =
     document.getElementById("timerOffButton");
@@ -122,9 +121,7 @@ const uploadStatus =
     document.getElementById("uploadStatus");
 
 const uploadStatusText =
-    document.getElementById(
-        "uploadStatusText"
-    );
+    document.getElementById("uploadStatusText");
 
 const uploadError =
     document.getElementById("uploadError");
@@ -144,7 +141,6 @@ let OUTPUT_WIDTH = 1080;
 let OUTPUT_HEIGHT = 1920;
 
 let photoMode = "portrait";
-
 let facingMode = "user";
 
 let currentStream = null;
@@ -155,25 +151,84 @@ let framedPhotoBlob = null;
 let currentCaptureId = null;
 
 let timerSeconds = 0;
-
 let countdownRunning = false;
 
 let uploadRunning = false;
-
 let uploadCompleted = false;
 
 
 /* =========================================
-   INITIAL MODE SELECTION
+   FULLSCREEN
+========================================= */
+
+async function enterCameraFullscreen() {
+
+    document.body.classList.add(
+        "camera-active"
+    );
+
+    try {
+
+        if (
+            document.fullscreenEnabled &&
+            !document.fullscreenElement
+        ) {
+
+            await document.documentElement
+                .requestFullscreen({
+                    navigationUI: "hide"
+                });
+        }
+
+    } catch (error) {
+
+        console.log(
+            "Fullscreen unavailable:",
+            error
+        );
+    }
+}
+
+
+async function exitCameraFullscreen() {
+
+    document.body.classList.remove(
+        "camera-active"
+    );
+
+    try {
+
+        if (document.fullscreenElement) {
+
+            await document.exitFullscreen();
+
+        }
+
+    } catch (error) {
+
+        console.log(
+            "Fullscreen exit unavailable:",
+            error
+        );
+    }
+}
+
+
+/* =========================================
+   MODE SELECTION
 ========================================= */
 
 function selectPortraitMode() {
 
     switchToPortrait();
 
-    modeScreen.classList.add("hidden");
+    modeScreen.classList.add(
+        "hidden"
+    );
 
-    cameraScreen.classList.remove("hidden");
+    cameraScreen.classList.remove(
+        "hidden"
+    );
 
     prepareCameraScreen();
 }
@@ -183,28 +238,28 @@ function selectLandscapeMode() {
 
     switchToLandscape();
 
-    modeScreen.classList.add("hidden");
+    modeScreen.classList.add(
+        "hidden"
+    );
 
-    cameraScreen.classList.remove("hidden");
+    cameraScreen.classList.remove(
+        "hidden"
+    );
 
     prepareCameraScreen();
 }
 
 
 /* =========================================
-   PORTRAIT MODE
+   PORTRAIT
 ========================================= */
 
 function switchToPortrait() {
 
-    photoMode =
-        "portrait";
+    photoMode = "portrait";
 
-    OUTPUT_WIDTH =
-        1080;
-
-    OUTPUT_HEIGHT =
-        1920;
+    OUTPUT_WIDTH = 1080;
+    OUTPUT_HEIGHT = 1920;
 
     photoCanvas.width =
         OUTPUT_WIDTH;
@@ -232,19 +287,15 @@ function switchToPortrait() {
 
 
 /* =========================================
-   LANDSCAPE MODE
+   LANDSCAPE
 ========================================= */
 
 function switchToLandscape() {
 
-    photoMode =
-        "landscape";
+    photoMode = "landscape";
 
-    OUTPUT_WIDTH =
-        1920;
-
-    OUTPUT_HEIGHT =
-        1080;
+    OUTPUT_WIDTH = 1920;
+    OUTPUT_HEIGHT = 1080;
 
     photoCanvas.width =
         OUTPUT_WIDTH;
@@ -272,7 +323,7 @@ function switchToLandscape() {
 
 
 /* =========================================
-   LIVE MODE SWITCHING
+   TOGGLE ORIENTATION
 ========================================= */
 
 function changePhotoMode() {
@@ -283,7 +334,6 @@ function changePhotoMode() {
     ) {
         return;
     }
-
 
     if (photoMode === "portrait") {
 
@@ -298,7 +348,7 @@ function changePhotoMode() {
 
 
 /* =========================================
-   MODE BUTTON ICON
+   MODE BUTTON
 ========================================= */
 
 function updateModeButton() {
@@ -308,6 +358,11 @@ function updateModeButton() {
         changeModeButton.textContent =
             "🖼️";
 
+        changeModeButton.setAttribute(
+            "aria-label",
+            "Switch to landscape"
+        );
+
         changeModeButton.title =
             "Switch to Landscape";
 
@@ -316,23 +371,34 @@ function updateModeButton() {
         changeModeButton.textContent =
             "📱";
 
+        changeModeButton.setAttribute(
+            "aria-label",
+            "Switch to portrait"
+        );
+
         changeModeButton.title =
             "Switch to Portrait";
-
     }
 }
 
 
 /* =========================================
-   PREPARE CAMERA SCREEN
+   PREPARE CAMERA
 ========================================= */
 
 function prepareCameraScreen() {
 
     stopCamera();
 
-    captureButton.disabled =
-        true;
+    captureButton.disabled = true;
+
+    cameraTopControls.classList.add(
+        "hidden"
+    );
+
+    cameraBottomControls.classList.add(
+        "hidden"
+    );
 
     cameraMessage.classList.remove(
         "hidden"
@@ -348,12 +414,49 @@ function prepareCameraScreen() {
 
 
 /* =========================================
+   GET CAMERA STREAM
+========================================= */
+
+async function getCameraStream() {
+
+    const constraints = {
+
+        audio: false,
+
+        video: {
+
+            facingMode: {
+                ideal: facingMode
+            }
+
+        }
+
+    };
+
+    currentStream =
+        await navigator.mediaDevices
+            .getUserMedia(
+                constraints
+            );
+
+    camera.srcObject =
+        currentStream;
+
+    await camera.play();
+
+    updateCameraMirror();
+}
+
+
+/* =========================================
    START CAMERA
 ========================================= */
 
 async function startCamera() {
 
     stopCamera();
+
+    await enterCameraFullscreen();
 
     cameraMessage.classList.remove(
         "hidden"
@@ -366,52 +469,34 @@ async function startCamera() {
         "hidden"
     );
 
-    captureButton.disabled =
-        true;
+    cameraTopControls.classList.add(
+        "hidden"
+    );
 
+    cameraBottomControls.classList.add(
+        "hidden"
+    );
+
+    captureButton.disabled = true;
 
     try {
 
-        const constraints = {
-
-            audio: false,
-
-            video: {
-
-                facingMode: {
-                    ideal: facingMode
-                }
-
-            }
-
-        };
-
-
-        currentStream =
-            await navigator.mediaDevices
-                .getUserMedia(
-                    constraints
-                );
-
-
-        camera.srcObject =
-            currentStream;
-
-
-        await camera.play();
-
-
-        updateCameraMirror();
-
+        await getCameraStream();
 
         cameraMessage.classList.add(
             "hidden"
         );
 
+        cameraTopControls.classList.remove(
+            "hidden"
+        );
+
+        cameraBottomControls.classList.remove(
+            "hidden"
+        );
 
         captureButton.disabled =
             false;
-
 
     } catch (error) {
 
@@ -420,16 +505,23 @@ async function startCamera() {
             error
         );
 
+        cameraTopControls.classList.add(
+            "hidden"
+        );
+
+        cameraBottomControls.classList.add(
+            "hidden"
+        );
 
         cameraMessage.classList.remove(
             "hidden"
         );
 
-
         startCameraButton.classList.remove(
             "hidden"
         );
 
+        await exitCameraFullscreen();
 
         if (
             error.name ===
@@ -451,7 +543,6 @@ async function startCamera() {
 
             cameraMessageText.textContent =
                 "The camera could not be started. Please check camera permissions and try again.";
-
         }
     }
 }
@@ -463,29 +554,27 @@ async function startCamera() {
 
 function stopCamera() {
 
-    if (!currentStream) {
-        return;
+    if (currentStream) {
+
+        currentStream
+            .getTracks()
+            .forEach(
+                function (track) {
+
+                    track.stop();
+
+                }
+            );
     }
 
+    camera.srcObject = null;
 
-    currentStream
-        .getTracks()
-        .forEach(
-            function (track) {
-
-                track.stop();
-
-            }
-        );
-
-
-    currentStream =
-        null;
+    currentStream = null;
 }
 
 
 /* =========================================
-   FRONT / REAR CAMERA
+   SWITCH FRONT / REAR CAMERA
 ========================================= */
 
 async function switchCamera() {
@@ -494,10 +583,7 @@ async function switchCamera() {
         return;
     }
 
-
-    if (
-        facingMode === "user"
-    ) {
+    if (facingMode === "user") {
 
         facingMode =
             "environment";
@@ -506,11 +592,64 @@ async function switchCamera() {
 
         facingMode =
             "user";
-
     }
 
+    stopCamera();
 
-    await startCamera();
+    cameraMessage.classList.remove(
+        "hidden"
+    );
+
+    cameraMessageText.textContent =
+        "Switching camera...";
+
+    cameraTopControls.classList.add(
+        "hidden"
+    );
+
+    cameraBottomControls.classList.add(
+        "hidden"
+    );
+
+    captureButton.disabled = true;
+
+    try {
+
+        await getCameraStream();
+
+        cameraMessage.classList.add(
+            "hidden"
+        );
+
+        cameraTopControls.classList.remove(
+            "hidden"
+        );
+
+        cameraBottomControls.classList.remove(
+            "hidden"
+        );
+
+        captureButton.disabled =
+            false;
+
+    } catch (error) {
+
+        console.error(
+            "Camera switch error:",
+            error
+        );
+
+        cameraMessage.classList.remove(
+            "hidden"
+        );
+
+        cameraMessageText.textContent =
+            "Could not switch camera. Please try again.";
+
+        startCameraButton.classList.remove(
+            "hidden"
+        );
+    }
 }
 
 
@@ -520,9 +659,7 @@ async function switchCamera() {
 
 function updateCameraMirror() {
 
-    if (
-        facingMode === "user"
-    ) {
+    if (facingMode === "user") {
 
         camera.classList.add(
             "selfie"
@@ -533,7 +670,6 @@ function updateCameraMirror() {
         camera.classList.remove(
             "selfie"
         );
-
     }
 }
 
@@ -548,10 +684,7 @@ function setTimer(seconds) {
         return;
     }
 
-
-    timerSeconds =
-        seconds;
-
+    timerSeconds = seconds;
 
     timerOffButton.classList.remove(
         "active"
@@ -565,35 +698,29 @@ function setTimer(seconds) {
         "active"
     );
 
-
     if (seconds === 0) {
 
         timerOffButton.classList.add(
             "active"
         );
 
-    } else if (
-        seconds === 3
-    ) {
+    } else if (seconds === 3) {
 
         timer3Button.classList.add(
             "active"
         );
 
-    } else if (
-        seconds === 5
-    ) {
+    } else if (seconds === 5) {
 
         timer5Button.classList.add(
             "active"
         );
-
     }
 }
 
 
 /* =========================================
-   DELAY
+   WAIT
 ========================================= */
 
 function waitOneSecond() {
@@ -612,104 +739,7 @@ function waitOneSecond() {
 
 
 /* =========================================
-   COUNTDOWN
-========================================= */
-
-async function runCountdown() {
-
-    if (
-        countdownRunning ||
-        !currentStream
-    ) {
-        return;
-    }
-
-
-    if (timerSeconds === 0) {
-
-        await capturePhoto();
-
-        return;
-    }
-
-
-    countdownRunning =
-        true;
-
-
-    setCameraControlsDisabled(
-        true
-    );
-
-
-    countdownOverlay.classList.remove(
-        "hidden"
-    );
-
-
-    try {
-
-        for (
-            let number =
-                timerSeconds;
-
-            number > 0;
-
-            number--
-        ) {
-
-            countdownNumber.textContent =
-                number;
-
-
-            await waitOneSecond();
-        }
-
-
-        countdownOverlay.classList.add(
-            "hidden"
-        );
-
-
-        countdownNumber.textContent =
-            "";
-
-
-        await capturePhoto();
-
-
-    } finally {
-
-        countdownRunning =
-            false;
-
-
-        countdownOverlay.classList.add(
-            "hidden"
-        );
-
-
-        countdownNumber.textContent =
-            "";
-
-
-        setCameraControlsDisabled(
-            false
-        );
-
-
-        if (currentStream) {
-
-            captureButton.disabled =
-                false;
-
-        }
-    }
-}
-
-
-/* =========================================
-   CAMERA CONTROLS ENABLE / DISABLE
+   DISABLE CAMERA CONTROLS
 ========================================= */
 
 function setCameraControlsDisabled(
@@ -737,7 +767,84 @@ function setCameraControlsDisabled(
 
 
 /* =========================================
-   DRAW VIDEO COVER
+   COUNTDOWN
+========================================= */
+
+async function runCountdown() {
+
+    if (
+        countdownRunning ||
+        !currentStream
+    ) {
+        return;
+    }
+
+    if (timerSeconds === 0) {
+
+        await capturePhoto();
+
+        return;
+    }
+
+    countdownRunning = true;
+
+    setCameraControlsDisabled(
+        true
+    );
+
+    countdownOverlay.classList.remove(
+        "hidden"
+    );
+
+    try {
+
+        for (
+            let number = timerSeconds;
+            number > 0;
+            number--
+        ) {
+
+            countdownNumber.textContent =
+                number;
+
+            await waitOneSecond();
+        }
+
+        countdownOverlay.classList.add(
+            "hidden"
+        );
+
+        countdownNumber.textContent =
+            "";
+
+        await capturePhoto();
+
+    } finally {
+
+        countdownRunning = false;
+
+        countdownOverlay.classList.add(
+            "hidden"
+        );
+
+        countdownNumber.textContent =
+            "";
+
+        setCameraControlsDisabled(
+            false
+        );
+
+        if (currentStream) {
+
+            captureButton.disabled =
+                false;
+        }
+    }
+}
+
+
+/* =========================================
+   DRAW VIDEO AS COVER
 ========================================= */
 
 function drawVideoCover(
@@ -753,22 +860,17 @@ function drawVideoCover(
     const videoHeight =
         videoElement.videoHeight;
 
-
     const videoRatio =
-        videoWidth /
-        videoHeight;
-
+        videoWidth / videoHeight;
 
     const destinationRatio =
         destinationWidth /
         destinationHeight;
 
-
     let sourceWidth;
     let sourceHeight;
     let sourceX;
     let sourceY;
-
 
     if (
         videoRatio >
@@ -778,11 +880,9 @@ function drawVideoCover(
         sourceHeight =
             videoHeight;
 
-
         sourceWidth =
             videoHeight *
             destinationRatio;
-
 
         sourceX =
             (
@@ -790,33 +890,25 @@ function drawVideoCover(
                 sourceWidth
             ) / 2;
 
-
-        sourceY =
-            0;
+        sourceY = 0;
 
     } else {
 
         sourceWidth =
             videoWidth;
 
-
         sourceHeight =
             videoWidth /
             destinationRatio;
 
-
-        sourceX =
-            0;
-
+        sourceX = 0;
 
         sourceY =
             (
                 videoHeight -
                 sourceHeight
             ) / 2;
-
     }
-
 
     context.drawImage(
 
@@ -833,7 +925,6 @@ function drawVideoCover(
 
         destinationWidth,
         destinationHeight
-
     );
 }
 
@@ -851,25 +942,19 @@ function drawCameraImage() {
         OUTPUT_HEIGHT
     );
 
-
-    if (
-        facingMode === "user"
-    ) {
+    if (facingMode === "user") {
 
         ctx.save();
-
 
         ctx.translate(
             OUTPUT_WIDTH,
             0
         );
 
-
         ctx.scale(
             -1,
             1
         );
-
 
         drawVideoCover(
             ctx,
@@ -878,9 +963,7 @@ function drawCameraImage() {
             OUTPUT_HEIGHT
         );
 
-
         ctx.restore();
-
 
     } else {
 
@@ -890,13 +973,12 @@ function drawCameraImage() {
             OUTPUT_WIDTH,
             OUTPUT_HEIGHT
         );
-
     }
 }
 
 
 /* =========================================
-   CANVAS TO JPEG
+   CANVAS TO JPEG BLOB
 ========================================= */
 
 function canvasToBlob() {
@@ -905,13 +987,9 @@ function canvasToBlob() {
         function (resolve) {
 
             photoCanvas.toBlob(
-
                 resolve,
-
                 "image/jpeg",
-
                 0.92
-
             );
 
         }
@@ -941,52 +1019,46 @@ function waitForFrame() {
                 return;
             }
 
-
-            function finishLoad() {
+            function handleLoad() {
 
                 cleanup();
 
                 resolve();
             }
 
-
-            function failLoad() {
+            function handleError() {
 
                 cleanup();
 
                 reject(
                     new Error(
-                        "The photo frame could not be loaded."
+                        "The selected photo frame could not be loaded."
                     )
                 );
             }
-
 
             function cleanup() {
 
                 liveFrame.removeEventListener(
                     "load",
-                    finishLoad
+                    handleLoad
                 );
 
                 liveFrame.removeEventListener(
                     "error",
-                    failLoad
+                    handleError
                 );
             }
 
-
             liveFrame.addEventListener(
                 "load",
-                finishLoad
+                handleLoad
             );
-
 
             liveFrame.addEventListener(
                 "error",
-                failLoad
+                handleError
             );
-
         }
     );
 }
@@ -1012,98 +1084,103 @@ async function capturePhoto() {
             return;
         }
 
-
-        captureButton.disabled =
-            true;
-
+        captureButton.disabled = true;
 
         await waitForFrame();
 
 
-        /* CLEAN PHOTO */
+        /*
+            CLEAN PHOTO
+        */
 
         drawCameraImage();
 
-
         cleanPhotoBlob =
             await canvasToBlob();
-
 
         if (!cleanPhotoBlob) {
 
             throw new Error(
                 "Could not create clean photo."
             );
-
         }
 
 
-        /* FRAME */
+        /*
+            FRAMED PHOTO
+        */
 
         ctx.drawImage(
-
             liveFrame,
-
             0,
             0,
-
             OUTPUT_WIDTH,
             OUTPUT_HEIGHT
-
         );
-
-
-        /* FRAMED PHOTO */
 
         framedPhotoBlob =
             await canvasToBlob();
-
 
         if (!framedPhotoBlob) {
 
             throw new Error(
                 "Could not create framed photo."
             );
-
         }
 
 
-        /* NEW CAPTURE ID */
+        /*
+            CAPTURE ID
+        */
 
         currentCaptureId =
             createCaptureId();
 
-
-        uploadCompleted =
-            false;
+        uploadCompleted = false;
 
 
-        /* PHOTO PREVIEW */
+        /*
+            PREVIEW
+        */
 
         setImageFromBlob(
             photoPreview,
             framedPhotoBlob
         );
 
-
         updatePreviewOrientation();
 
 
+        /*
+            STOP CAMERA / EXIT IMMERSIVE VIEW
+        */
+
         stopCamera();
 
+        cameraTopControls.classList.add(
+            "hidden"
+        );
+
+        cameraBottomControls.classList.add(
+            "hidden"
+        );
+
+        await exitCameraFullscreen();
+
+
+        /*
+            SHOW PREVIEW
+        */
 
         cameraScreen.classList.add(
             "hidden"
         );
 
-
         previewScreen.classList.remove(
             "hidden"
         );
 
-
         resetUploadInterface();
-
 
     } catch (error) {
 
@@ -1112,12 +1189,10 @@ async function capturePhoto() {
             error
         );
 
-
         alert(
             "Photo error:\n\n" +
             error.message
         );
-
 
         captureButton.disabled =
             false;
@@ -1131,12 +1206,42 @@ async function capturePhoto() {
 
 function createCaptureId() {
 
-    const randomPart =
-        crypto.randomUUID()
-            .replaceAll("-", "")
-            .slice(0, 12)
-            .toUpperCase();
+    let randomPart;
 
+    if (
+        window.crypto &&
+        typeof crypto.randomUUID ===
+            "function"
+    ) {
+
+        randomPart =
+            crypto.randomUUID()
+                .replaceAll(
+                    "-",
+                    ""
+                )
+                .slice(
+                    0,
+                    12
+                )
+                .toUpperCase();
+
+    } else {
+
+        randomPart =
+            (
+                Date.now()
+                    .toString(36) +
+                Math.random()
+                    .toString(36)
+                    .slice(2)
+            )
+                .slice(
+                    0,
+                    12
+                )
+                .toUpperCase();
+    }
 
     return (
         "AC26_" +
@@ -1161,19 +1266,15 @@ function setImageFromBlob(
         URL.revokeObjectURL(
             imageElement.dataset.objectUrl
         );
-
     }
-
 
     const url =
         URL.createObjectURL(
             blob
         );
 
-
     imageElement.src =
         url;
-
 
     imageElement.dataset.objectUrl =
         url;
@@ -1190,7 +1291,6 @@ function updatePreviewOrientation() {
         return;
     }
 
-
     if (
         photoMode ===
         "landscape"
@@ -1203,7 +1303,6 @@ function updatePreviewOrientation() {
 
         previewContainer.style.aspectRatio =
             "9 / 16";
-
     }
 }
 
@@ -1214,32 +1313,24 @@ function updatePreviewOrientation() {
 
 function resetUploadInterface() {
 
-    uploadRunning =
-        false;
-
+    uploadRunning = false;
 
     uploadStatus.classList.add(
         "hidden"
     );
 
-
     uploadError.classList.add(
         "hidden"
     );
 
-
-    uploadError.textContent =
-        "";
-
+    uploadError.textContent = "";
 
     previewActions.classList.remove(
         "hidden"
     );
 
-
     addToPartyButton.disabled =
         false;
-
 
     retakeButton.disabled =
         false;
@@ -1256,32 +1347,18 @@ async function retakePhoto() {
         return;
     }
 
-
     previewScreen.classList.add(
         "hidden"
     );
-
 
     cameraScreen.classList.remove(
         "hidden"
     );
 
-
-    cleanPhotoBlob =
-        null;
-
-
-    framedPhotoBlob =
-        null;
-
-
-    currentCaptureId =
-        null;
-
-
-    uploadCompleted =
-        false;
-
+    cleanPhotoBlob = null;
+    framedPhotoBlob = null;
+    currentCaptureId = null;
+    uploadCompleted = false;
 
     await startCamera();
 }
@@ -1300,7 +1377,6 @@ async function addToParty() {
         return;
     }
 
-
     if (
         !cleanPhotoBlob ||
         !framedPhotoBlob ||
@@ -1314,28 +1390,21 @@ async function addToParty() {
         return;
     }
 
-
-    uploadRunning =
-        true;
-
+    uploadRunning = true;
 
     addToPartyButton.disabled =
         true;
 
-
     retakeButton.disabled =
         true;
-
 
     uploadError.classList.add(
         "hidden"
     );
 
-
     uploadStatus.classList.remove(
         "hidden"
     );
-
 
     try {
 
@@ -1344,20 +1413,18 @@ async function addToParty() {
             currentCaptureId +
             "_clean.jpg";
 
-
         const framedPath =
             "framed/" +
             currentCaptureId +
             "_framed.jpg";
 
 
-        /* =================================
-           CLEAN UPLOAD
-        ================================= */
+        /*
+            CLEAN UPLOAD
+        */
 
         uploadStatusText.textContent =
             "Uploading clean photo...";
-
 
         const cleanResult =
             await supabaseClient
@@ -1378,24 +1445,21 @@ async function addToParty() {
                     }
                 );
 
-
         if (cleanResult.error) {
 
             throw new Error(
                 "Clean photo upload failed: " +
                 cleanResult.error.message
             );
-
         }
 
 
-        /* =================================
-           FRAMED UPLOAD
-        ================================= */
+        /*
+            FRAMED UPLOAD
+        */
 
         uploadStatusText.textContent =
             "Uploading framed photo...";
-
 
         const framedResult =
             await supabaseClient
@@ -1416,24 +1480,21 @@ async function addToParty() {
                     }
                 );
 
-
         if (framedResult.error) {
 
             throw new Error(
                 "Framed photo upload failed: " +
                 framedResult.error.message
             );
-
         }
 
 
-        /* =================================
-           DATABASE RECORD
-        ================================= */
+        /*
+            DATABASE RECORD
+        */
 
         uploadStatusText.textContent =
             "Adding photo to the party...";
-
 
         const databaseResult =
             await supabaseClient
@@ -1457,31 +1518,24 @@ async function addToParty() {
                     }
                 );
 
-
         if (databaseResult.error) {
 
             throw new Error(
                 "Photo record failed: " +
                 databaseResult.error.message
             );
-
         }
 
 
-        /* =================================
-           SUCCESS
-        ================================= */
+        /*
+            SUCCESS
+        */
 
-        uploadCompleted =
-            true;
+        uploadCompleted = true;
 
-
-        uploadRunning =
-            false;
-
+        uploadRunning = false;
 
         showSuccessScreen();
-
 
     } catch (error) {
 
@@ -1490,32 +1544,17 @@ async function addToParty() {
             error
         );
 
-
-        uploadRunning =
-            false;
-
-
-        /*
-            IMPORTANT:
-
-            We do not erase the blobs.
-
-            The photo stays available on
-            screen and the guest can retry.
-        */
+        uploadRunning = false;
 
         showUploadError(
             error.message
         );
 
-
         addToPartyButton.disabled =
             false;
 
-
         retakeButton.disabled =
             false;
-
     }
 }
 
@@ -1532,11 +1571,9 @@ function showUploadError(
         "hidden"
     );
 
-
     uploadError.classList.remove(
         "hidden"
     );
-
 
     uploadError.textContent =
         "Upload failed. " +
@@ -1555,17 +1592,14 @@ function showSuccessScreen() {
         "hidden"
     );
 
-
     previewScreen.classList.add(
         "hidden"
     );
-
 
     setImageFromBlob(
         successPhotoPreview,
         framedPhotoBlob
     );
-
 
     successScreen.classList.remove(
         "hidden"
@@ -1574,7 +1608,7 @@ function showSuccessScreen() {
 
 
 /* =========================================
-   TAKE ANOTHER PHOTO
+   TAKE ANOTHER
 ========================================= */
 
 async function takeAnotherPhoto() {
@@ -1583,38 +1617,23 @@ async function takeAnotherPhoto() {
         "hidden"
     );
 
-
     cameraScreen.classList.remove(
         "hidden"
     );
 
+    cleanPhotoBlob = null;
+    framedPhotoBlob = null;
+    currentCaptureId = null;
 
-    cleanPhotoBlob =
-        null;
-
-
-    framedPhotoBlob =
-        null;
-
-
-    currentCaptureId =
-        null;
-
-
-    uploadCompleted =
-        false;
-
-
-    uploadRunning =
-        false;
-
+    uploadCompleted = false;
+    uploadRunning = false;
 
     await startCamera();
 }
 
 
 /* =========================================
-   DOWNLOAD HELPER
+   DOWNLOAD
 ========================================= */
 
 function downloadBlob(
@@ -1626,37 +1645,29 @@ function downloadBlob(
         return;
     }
 
-
     const url =
         URL.createObjectURL(
             blob
         );
-
 
     const link =
         document.createElement(
             "a"
         );
 
-
     link.href =
         url;
 
-
     link.download =
         filename;
-
 
     document.body.appendChild(
         link
     );
 
-
     link.click();
 
-
     link.remove();
-
 
     setTimeout(
         function () {
@@ -1666,14 +1677,13 @@ function downloadBlob(
             );
 
         },
-
         1000
     );
 }
 
 
 /* =========================================
-   DOWNLOAD FILE NAME
+   DOWNLOAD FILENAME
 ========================================= */
 
 function createPhotoFilename(
@@ -1688,9 +1698,7 @@ function createPhotoFilename(
             version +
             ".jpg"
         );
-
     }
-
 
     return (
         "aloha-" +
@@ -1711,13 +1719,10 @@ function createPhotoFilename(
 function downloadCleanPhoto() {
 
     downloadBlob(
-
         cleanPhotoBlob,
-
         createPhotoFilename(
             "clean"
         )
-
     );
 }
 
@@ -1729,13 +1734,10 @@ function downloadCleanPhoto() {
 function downloadFramedPhoto() {
 
     downloadBlob(
-
         framedPhotoBlob,
-
         createPhotoFilename(
             "framed"
         )
-
     );
 }
 
@@ -1749,60 +1751,50 @@ portraitModeButton.addEventListener(
     selectPortraitMode
 );
 
-
 landscapeModeButton.addEventListener(
     "click",
     selectLandscapeMode
 );
-
 
 changeModeButton.addEventListener(
     "click",
     changePhotoMode
 );
 
-
 startCameraButton.addEventListener(
     "click",
     startCamera
 );
-
 
 switchCameraButton.addEventListener(
     "click",
     switchCamera
 );
 
-
 captureButton.addEventListener(
     "click",
     runCountdown
 );
-
 
 retakeButton.addEventListener(
     "click",
     retakePhoto
 );
 
-
 addToPartyButton.addEventListener(
     "click",
     addToParty
 );
-
 
 downloadCleanButton.addEventListener(
     "click",
     downloadCleanPhoto
 );
 
-
 downloadFramedButton.addEventListener(
     "click",
     downloadFramedPhoto
 );
-
 
 takeAnotherButton.addEventListener(
     "click",
@@ -1810,7 +1802,9 @@ takeAnotherButton.addEventListener(
 );
 
 
-/* TIMER */
+/* =========================================
+   TIMER EVENTS
+========================================= */
 
 timerOffButton.addEventListener(
     "click",
@@ -1821,7 +1815,6 @@ timerOffButton.addEventListener(
     }
 );
 
-
 timer3Button.addEventListener(
     "click",
     function () {
@@ -1830,7 +1823,6 @@ timer3Button.addEventListener(
 
     }
 );
-
 
 timer5Button.addEventListener(
     "click",
@@ -1848,7 +1840,11 @@ timer5Button.addEventListener(
 
 window.addEventListener(
     "pagehide",
-    stopCamera
+    function () {
+
+        stopCamera();
+
+    }
 );
 
 
