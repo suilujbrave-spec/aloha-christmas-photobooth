@@ -346,6 +346,57 @@ function changePhotoMode() {
     }
 }
 
+/* =========================================
+   AUTOMATIC DEVICE ORIENTATION
+========================================= */
+
+const landscapeOrientation =
+    window.matchMedia(
+        "(orientation: landscape)"
+    );
+
+
+function syncPhotoModeWithDevice() {
+
+    /*
+        Do not change orientation in the middle
+        of a countdown or upload.
+    */
+
+    if (
+        countdownRunning ||
+        uploadRunning
+    ) {
+        return;
+    }
+
+
+    if (
+        landscapeOrientation.matches
+    ) {
+
+        if (
+            photoMode !==
+            "landscape"
+        ) {
+
+            switchToLandscape();
+
+        }
+
+    } else {
+
+        if (
+            photoMode !==
+            "portrait"
+        ) {
+
+            switchToPortrait();
+
+        }
+
+    }
+}
 
 /* =========================================
    MODE BUTTON
@@ -1833,6 +1884,34 @@ timer5Button.addEventListener(
     }
 );
 
+/* =========================================
+   DEVICE ROTATION EVENT
+========================================= */
+
+landscapeOrientation.addEventListener(
+    "change",
+    function () {
+
+        syncPhotoModeWithDevice();
+
+    }
+);
+
+
+/*
+    Extra resize listener helps mobile
+    browsers recalculate the viewport after
+    their address/navigation bars change.
+*/
+
+window.addEventListener(
+    "resize",
+    function () {
+
+        syncPhotoModeWithDevice();
+
+    }
+);
 
 /* =========================================
    CLEANUP
@@ -1852,6 +1931,9 @@ window.addEventListener(
    INITIAL STATE
 ========================================= */
 
+syncPhotoModeWithDevice();
+
 updateModeButton();
 
 setTimer(0);
+``
