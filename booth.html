@@ -11,7 +11,6 @@
 
     <title>Aloha Christmas Photobooth</title>
 
-    <!-- Photobooth stylesheet -->
     <link rel="stylesheet" href="booth.css">
 </head>
 
@@ -19,9 +18,8 @@
 
     <main class="booth">
 
-
         <!-- =====================================
-             MODE SELECTION SCREEN
+             MODE SELECTION
         ====================================== -->
 
         <section
@@ -33,7 +31,9 @@
 
                 <h1>Aloha Christmas</h1>
 
-                <p>Choose your photo style</p>
+                <p>
+                    Choose your photo style
+                </p>
 
             </div>
 
@@ -95,11 +95,15 @@
             class="screen hidden"
         >
 
+            <!-- Normal header before camera starts -->
+
             <div class="top-bar">
 
                 <div>
 
-                    <h1>Aloha Christmas</h1>
+                    <h1>
+                        Aloha Christmas
+                    </h1>
 
                     <p>
                         Strike a pose!
@@ -107,43 +111,17 @@
 
                 </div>
 
-
-                <!-- Portrait / Landscape -->
-
-                <button
-                    id="changeModeButton"
-                    class="small-button mode-change-button"
-                    type="button"
-                    aria-label="Switch photo orientation"
-                    title="Switch photo orientation"
-                >
-                    🖼️
-                </button>
-
-
-                <!-- Front / Rear camera -->
-
-                <button
-                    id="switchCameraButton"
-                    class="small-button"
-                    type="button"
-                    aria-label="Switch camera"
-                    title="Switch camera"
-                >
-                    🔄
-                </button>
-
             </div>
 
 
             <!-- =====================================
-                 CAMERA + FRAME
+                 CAMERA
             ====================================== -->
 
             <div class="camera-container portrait">
 
 
-                <!-- Live camera -->
+                <!-- LIVE CAMERA -->
 
                 <video
                     id="camera"
@@ -153,7 +131,7 @@
                 ></video>
 
 
-                <!-- Canva overlay -->
+                <!-- CANVA FRAME -->
 
                 <img
                     id="liveFrame"
@@ -163,7 +141,110 @@
                 >
 
 
-                <!-- Timer countdown -->
+                <!-- =================================
+                     TOP CAMERA CONTROLS
+                ================================== -->
+
+                <div
+                    id="cameraTopControls"
+                    class="camera-top-controls hidden"
+                >
+
+                    <!-- Portrait / Landscape -->
+
+                    <button
+                        id="changeModeButton"
+                        class="camera-overlay-button"
+                        type="button"
+                        aria-label="Switch photo orientation"
+                        title="Switch photo orientation"
+                    >
+                        🖼️
+                    </button>
+
+
+                    <!-- Front / Rear -->
+
+                    <button
+                        id="switchCameraButton"
+                        class="camera-overlay-button"
+                        type="button"
+                        aria-label="Switch camera"
+                        title="Switch camera"
+                    >
+                        🔄
+                    </button>
+
+                </div>
+
+
+                <!-- =================================
+                     BOTTOM CAMERA CONTROLS
+                ================================== -->
+
+                <div
+                    id="cameraBottomControls"
+                    class="camera-bottom-controls hidden"
+                >
+
+                    <!-- TIMER -->
+
+                    <div class="timer-controls">
+
+                        <span class="timer-label">
+                            Timer
+                        </span>
+
+
+                        <div class="timer-buttons">
+
+                            <button
+                                id="timerOffButton"
+                                class="timer-button active"
+                                type="button"
+                            >
+                                OFF
+                            </button>
+
+                            <button
+                                id="timer3Button"
+                                class="timer-button"
+                                type="button"
+                            >
+                                3s
+                            </button>
+
+                            <button
+                                id="timer5Button"
+                                class="timer-button"
+                                type="button"
+                            >
+                                5s
+                            </button>
+
+                        </div>
+
+                    </div>
+
+
+                    <!-- SHUTTER -->
+
+                    <button
+                        id="captureButton"
+                        class="shutter-button"
+                        type="button"
+                        aria-label="Take photo"
+                        disabled
+                    >
+                        <span></span>
+                    </button>
+
+                </div>
+
+
+                <!-- =================================
+                     COUNTDOWN
+                ================================== -->
 
                 <div
                     id="countdownOverlay"
@@ -175,7 +256,9 @@
                 </div>
 
 
-                <!-- Camera start / error screen -->
+                <!-- =================================
+                     OPEN CAMERA
+                ================================== -->
 
                 <div
                     id="cameraMessage"
@@ -198,78 +281,11 @@
 
             </div>
 
-
-            <!-- =====================================
-                 CAMERA CONTROLS
-            ====================================== -->
-
-            <div class="camera-controls">
-
-
-                <!-- TIMER -->
-
-                <div class="timer-controls">
-
-                    <span class="timer-label">
-                        Timer
-                    </span>
-
-
-                    <div class="timer-buttons">
-
-                        <button
-                            id="timerOffButton"
-                            class="timer-button active"
-                            type="button"
-                        >
-                            OFF
-                        </button>
-
-                        <button
-                            id="timer3Button"
-                            class="timer-button"
-                            type="button"
-                        >
-                            3s
-                        </button>
-
-                        <button
-                            id="timer5Button"
-                            class="timer-button"
-                            type="button"
-                        >
-                            5s
-                        </button>
-
-                    </div>
-
-                </div>
-
-
-                <!-- SHUTTER -->
-
-                <button
-                    id="captureButton"
-                    class="shutter-button"
-                    type="button"
-                    aria-label="Take photo"
-                    disabled
-                >
-                    <span></span>
-                </button>
-
-
-                <p>
-                    Take Photo
-                </p>
-
-            </div>
-
         </section>
 
 
         <!-- =====================================
-             PHOTO PREVIEW SCREEN
+             PHOTO PREVIEW
         ====================================== -->
 
         <section
@@ -300,9 +316,7 @@
             </div>
 
 
-            <!-- =====================================
-                 UPLOAD STATUS
-            ====================================== -->
+            <!-- UPLOAD STATUS -->
 
             <div
                 id="uploadStatus"
@@ -318,9 +332,7 @@
             </div>
 
 
-            <!-- =====================================
-                 PREVIEW ACTIONS
-            ====================================== -->
+            <!-- PREVIEW BUTTONS -->
 
             <div
                 id="previewActions"
@@ -347,8 +359,6 @@
             </div>
 
 
-            <!-- Upload errors -->
-
             <p
                 id="uploadError"
                 class="upload-error hidden"
@@ -358,7 +368,7 @@
 
 
         <!-- =====================================
-             SUCCESS / MAHALO SCREEN
+             SUCCESS
         ====================================== -->
 
         <section
@@ -389,8 +399,6 @@
                 </p>
 
 
-                <!-- Uploaded framed photo -->
-
                 <div class="success-preview">
 
                     <img
@@ -400,8 +408,6 @@
 
                 </div>
 
-
-                <!-- Download options -->
 
                 <div class="success-actions">
 
@@ -441,7 +447,7 @@
 
 
     <!-- =====================================
-         HIDDEN PHOTO PROCESSING CANVAS
+         PHOTO PROCESSING CANVAS
     ====================================== -->
 
     <canvas
@@ -451,18 +457,12 @@
     ></canvas>
 
 
-    <!-- =====================================
-         SUPABASE JAVASCRIPT LIBRARY
-
-         This MUST be loaded before booth.js.
-    ====================================== -->
+    <!-- Supabase -->
 
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
 
-    <!-- =====================================
-         PHOTOBOOTH JAVASCRIPT
-    ====================================== -->
+    <!-- Photobooth -->
 
     <script src="booth.js"></script>
 
