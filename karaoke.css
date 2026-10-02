@@ -1,0 +1,728 @@
+/* =========================================
+   RESET
+========================================= */
+
+* {
+    box-sizing: border-box;
+}
+
+html,
+body {
+    width: 100%;
+    height: 100%;
+
+    margin: 0;
+    padding: 0;
+
+    overflow: hidden;
+}
+
+body {
+    font-family:
+        system-ui,
+        -apple-system,
+        BlinkMacSystemFont,
+        "Segoe UI",
+        sans-serif;
+
+    background: black;
+
+    color: white;
+}
+
+button,
+input {
+    font: inherit;
+}
+
+.hidden {
+    display: none !important;
+}
+
+
+/* =========================================
+   LOGIN / READY
+========================================= */
+
+.login-screen,
+.ready-screen {
+    width: 100%;
+    min-height: 100vh;
+
+    display: flex;
+
+    align-items: center;
+    justify-content: center;
+
+    padding: 24px;
+
+    background:
+        radial-gradient(
+            circle at center,
+            #07868a 0%,
+            #034c53 50%,
+            #012b30 100%
+        );
+}
+
+
+.login-card,
+.ready-card {
+    width: 100%;
+    max-width: 460px;
+
+    padding: 38px 32px;
+
+    text-align: center;
+
+    border-radius: 28px;
+
+    background:
+        rgba(0, 0, 0, 0.26);
+
+    border:
+        1px solid
+        rgba(255, 255, 255, 0.18);
+
+    box-shadow:
+        0 25px 80px
+        rgba(0, 0, 0, 0.4);
+}
+
+
+.aloha-icon {
+    margin-bottom: 12px;
+
+    font-size: 3.3rem;
+}
+
+
+.login-card h1,
+.ready-card h1 {
+    margin: 0;
+
+    font-size: 2rem;
+
+    text-transform: uppercase;
+}
+
+
+.login-card h2,
+.ready-card h2 {
+    margin: 5px 0 0;
+
+    color: #ffd447;
+
+    font-size: 1.35rem;
+}
+
+
+.login-card > p,
+.ready-card > p {
+    color:
+        rgba(255, 255, 255, 0.72);
+
+    line-height: 1.5;
+}
+
+
+.login-card form {
+    display: flex;
+
+    flex-direction: column;
+
+    gap: 12px;
+
+    margin-top: 24px;
+}
+
+
+.login-card input {
+    width: 100%;
+
+    padding: 14px 15px;
+
+    border:
+        1px solid
+        rgba(255, 255, 255, 0.25);
+
+    border-radius: 13px;
+
+    background:
+        rgba(255, 255, 255, 0.1);
+
+    color: white;
+
+    outline: none;
+}
+
+
+.login-card input:focus {
+    border-color: #ffd447;
+}
+
+
+.login-card button,
+.start-button {
+    width: 100%;
+
+    padding: 14px 20px;
+
+    border: 0;
+
+    border-radius: 999px;
+
+    background: #ffd447;
+
+    color: #063f44;
+
+    font-weight: 800;
+
+    cursor: pointer;
+}
+
+
+button:disabled {
+    opacity: 0.45;
+
+    cursor: not-allowed;
+}
+
+
+.secondary-button {
+    width: 100%;
+
+    margin-top: 10px;
+
+    padding: 13px 20px;
+
+    border:
+        1px solid
+        rgba(255, 255, 255, 0.3);
+
+    border-radius: 999px;
+
+    background:
+        rgba(255, 255, 255, 0.1);
+
+    color: white;
+
+    font-weight: 700;
+
+    cursor: pointer;
+}
+
+
+.error-message {
+    margin-top: 14px;
+
+    padding: 12px;
+
+    border-radius: 12px;
+
+    background:
+        rgba(170, 0, 0, 0.32);
+
+    color: #ffe5e5;
+}
+
+
+/* =========================================
+   PHOTO COUNT
+========================================= */
+
+.photo-count-box {
+    margin: 26px 0 18px;
+}
+
+
+.photo-count-box strong {
+    display: block;
+
+    color: #ffd447;
+
+    font-size: 4rem;
+
+    line-height: 1;
+}
+
+
+.photo-count-box span {
+    display: block;
+
+    margin-top: 7px;
+
+    color:
+        rgba(255, 255, 255, 0.65);
+
+    font-size: 0.75rem;
+
+    letter-spacing: 0.12em;
+}
+
+
+/* =========================================
+   KARAOKE SCREEN
+========================================= */
+
+.karaoke-screen {
+    position: relative;
+
+    width: 100vw;
+    height: 100vh;
+
+    overflow: hidden;
+
+    background: black;
+}
+
+
+/* =========================================
+   BACKGROUND
+========================================= */
+
+.photo-background {
+    position: absolute;
+
+    inset: -50px;
+
+    z-index: 1;
+
+    background-position: center;
+    background-size: cover;
+
+    filter:
+        blur(36px)
+        brightness(0.38)
+        saturate(1.15);
+
+    transform: scale(1.14);
+
+    opacity: 0;
+
+    transition:
+        opacity 1s ease;
+}
+
+
+.photo-background.visible {
+    opacity: 1;
+}
+
+
+/* =========================================
+   MAIN PARTY PHOTO
+========================================= */
+
+.photo-stage {
+    position: absolute;
+
+    inset: 0;
+
+    z-index: 2;
+
+    display: flex;
+
+    align-items: center;
+    justify-content: center;
+
+    padding: 2vh 2vw;
+}
+
+
+.party-photo {
+    display: block;
+
+    width: auto;
+    height: auto;
+
+    max-width: 100%;
+    max-height: 100%;
+
+    object-fit: contain;
+
+    box-shadow:
+        0 30px 100px
+        rgba(0, 0, 0, 0.65);
+
+    transition:
+        opacity 0.7s ease;
+
+    animation:
+        karaokeZoom
+        8s
+        ease-out
+        forwards;
+}
+
+
+@keyframes karaokeZoom {
+
+    from {
+        transform: scale(1);
+    }
+
+    to {
+        transform: scale(1.035);
+    }
+}
+
+
+/* =========================================
+   GRADIENT FOR TEXT READABILITY
+========================================= */
+
+.lyric-shade {
+    position: absolute;
+
+    left: 0;
+    right: 0;
+    bottom: 0;
+
+    z-index: 3;
+
+    height: 58vh;
+
+    pointer-events: none;
+
+    background:
+        linear-gradient(
+            to bottom,
+            transparent 0%,
+            rgba(0, 0, 0, 0.30) 22%,
+            rgba(0, 0, 0, 0.78) 100%
+        );
+}
+
+
+/* =========================================
+   INTRO TITLE
+========================================= */
+
+.intro-title {
+    position: absolute;
+
+    inset: 0;
+
+    z-index: 6;
+
+    display: flex;
+
+    flex-direction: column;
+
+    align-items: center;
+    justify-content: center;
+
+    text-align: center;
+
+    background:
+        radial-gradient(
+            circle at center,
+            rgba(7, 134, 138, 0.94),
+            rgba(1, 43, 48, 0.97)
+        );
+}
+
+
+.intro-title > div {
+    font-size: 4rem;
+}
+
+
+.intro-title h1 {
+    margin: 12px 0 0;
+
+    font-size:
+        clamp(
+            3rem,
+            8vw,
+            8rem
+        );
+
+    line-height: 0.95;
+
+    text-transform: uppercase;
+}
+
+
+.intro-title h2 {
+    margin: 10px 0 0;
+
+    color: #ffd447;
+
+    font-size:
+        clamp(
+            2rem,
+            5vw,
+            5rem
+        );
+}
+
+
+.intro-title p {
+    margin: 20px 0 0;
+
+    font-size: 1.3rem;
+
+    text-transform: uppercase;
+
+    letter-spacing: 0.20em;
+}
+
+
+/* =========================================
+   LYRICS
+========================================= */
+
+.lyrics-panel {
+    position: absolute;
+
+    left: 5vw;
+    right: 5vw;
+    bottom: 6vh;
+
+    z-index: 7;
+
+    display: flex;
+
+    flex-direction: column;
+
+    align-items: center;
+
+    text-align: center;
+}
+
+
+.section-label {
+    margin-bottom: 14px;
+
+    padding: 6px 13px;
+
+    border-radius: 999px;
+
+    background:
+        rgba(255, 212, 71, 0.18);
+
+    color: #ffd447;
+
+    font-size: 0.72rem;
+
+    font-weight: 800;
+
+    letter-spacing: 0.14em;
+}
+
+
+.lyric {
+    max-width: 1500px;
+
+    text-shadow:
+        0 3px 12px black,
+        0 1px 4px black;
+}
+
+
+.previous-lyric,
+.next-lyric {
+    min-height: 1.5em;
+
+    color:
+        rgba(255, 255, 255, 0.5);
+
+    font-size:
+        clamp(
+            1rem,
+            1.7vw,
+            1.8rem
+        );
+}
+
+
+.current-lyric {
+    min-height: 1.6em;
+
+    margin: 10px 0;
+
+    color: #ffd447;
+
+    font-size:
+        clamp(
+            1.8rem,
+            4vw,
+            4.2rem
+        );
+
+    font-weight: 900;
+
+    line-height: 1.12;
+
+    text-transform: uppercase;
+}
+
+
+/* =========================================
+   FINALE
+========================================= */
+
+.finale-screen {
+    position: absolute;
+
+    inset: 0;
+
+    z-index: 9;
+
+    display: flex;
+
+    flex-direction: column;
+
+    align-items: center;
+    justify-content: center;
+
+    text-align: center;
+
+    background:
+        radial-gradient(
+            circle at center,
+            rgba(7, 134, 138, 0.94),
+            rgba(1, 36, 40, 0.98)
+        );
+}
+
+
+.finale-icon {
+    font-size: 4.5rem;
+}
+
+
+.finale-screen h1 {
+    margin: 12px 0 0;
+
+    color: #ffd447;
+
+    font-size:
+        clamp(
+            3rem,
+            7vw,
+            7rem
+        );
+
+    text-transform: uppercase;
+}
+
+
+.finale-screen h2 {
+    margin: 10px 0 0;
+
+    font-size:
+        clamp(
+            2rem,
+            4vw,
+            4rem
+        );
+}
+
+
+.finale-screen p {
+    margin: 20px 0 0;
+
+    font-size:
+        clamp(
+            1rem,
+            2vw,
+            2rem
+        );
+}
+
+
+/* =========================================
+   CONTROLS
+========================================= */
+
+.karaoke-controls {
+    position: absolute;
+
+    left: 50%;
+    bottom: 15px;
+
+    z-index: 20;
+
+    display: flex;
+
+    gap: 8px;
+
+    padding: 7px;
+
+    transform:
+        translateX(-50%);
+
+    border-radius: 999px;
+
+    background:
+        rgba(0, 0, 0, 0.48);
+
+    opacity: 0;
+
+    transition:
+        opacity 0.25s ease;
+}
+
+
+.karaoke-screen:hover
+.karaoke-controls {
+    opacity: 1;
+}
+
+
+.karaoke-controls button {
+    width: 46px;
+    height: 46px;
+
+    padding: 0;
+
+    border:
+        1px solid
+        rgba(255, 255, 255, 0.2);
+
+    border-radius: 50%;
+
+    background:
+        rgba(255, 255, 255, 0.1);
+
+    color: white;
+
+    cursor: pointer;
+}
+
+
+/* =========================================
+   TIME
+========================================= */
+
+.time-display {
+    position: absolute;
+
+    right: 18px;
+    bottom: 18px;
+
+    z-index: 20;
+
+    padding: 7px 10px;
+
+    border-radius: 999px;
+
+    background:
+        rgba(0, 0, 0, 0.48);
+
+    color:
+        rgba(255, 255, 255, 0.7);
+
+    font-size: 0.75rem;
+
+    opacity: 0;
+}
+
+
+.karaoke-screen:hover
+.time-display {
+    opacity: 1;
+}

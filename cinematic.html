@@ -1,0 +1,353 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>Aloha Christmas 2026 Cinematic SDE</title>
+
+    <link rel="stylesheet" href="cinematic.css">
+</head>
+
+<body>
+
+    <!-- =====================================
+         LOGIN / READY SCREEN
+    ====================================== -->
+
+    <section
+        id="loginScreen"
+        class="login-screen"
+    >
+
+        <div class="login-card">
+
+            <div class="aloha-icon">
+                🌺 🎄 🌴
+            </div>
+
+            <h1>
+                Aloha Christmas
+            </h1>
+
+            <h2>
+                Cinematic SDE
+            </h2>
+
+            <p>
+                Approved party photos synchronized
+                with the Aloha Christmas song.
+            </p>
+
+            <form id="loginForm">
+
+                <input
+                    id="email"
+                    type="email"
+                    placeholder="Organizer email"
+                    autocomplete="email"
+                    required
+                >
+
+                <input
+                    id="password"
+                    type="password"
+                    placeholder="Password"
+                    autocomplete="current-password"
+                    required
+                >
+
+                <button
+                    id="loginButton"
+                    type="submit"
+                >
+                    Sign In
+                </button>
+
+            </form>
+
+            <p
+                id="loginError"
+                class="error-message hidden"
+            ></p>
+
+        </div>
+
+    </section>
+
+
+    <!-- =====================================
+         READY SCREEN
+    ====================================== -->
+
+    <section
+        id="readyScreen"
+        class="ready-screen hidden"
+    >
+
+        <div class="ready-card">
+
+            <div class="aloha-icon">
+                🌺 🎄 🌴
+            </div>
+
+            <h1>
+                Aloha Christmas 2026
+            </h1>
+
+            <h2>
+                Cinematic Same Day Edit
+            </h2>
+
+            <div class="photo-ready-count">
+
+                <span id="approvedCount">
+                    0
+                </span>
+
+                <small>
+                    APPROVED PHOTOS READY
+                </small>
+
+            </div>
+
+            <p id="readyMessage">
+                Preparing the show...
+            </p>
+
+            <button
+                id="startShowButton"
+                class="start-show-button"
+                type="button"
+                disabled
+            >
+                🎬 Start Cinematic Show
+            </button>
+
+            <button
+                id="fullscreenBeforeStartButton"
+                class="secondary-button"
+                type="button"
+            >
+                ⛶ Fullscreen
+            </button>
+
+        </div>
+
+    </section>
+
+
+    <!-- =====================================
+         CINEMATIC STAGE
+    ====================================== -->
+
+    <main
+        id="cinematicScreen"
+        class="cinematic-screen hidden"
+    >
+
+        <!-- Blurred atmospheric background -->
+
+        <div
+            id="cinematicBackground"
+            class="cinematic-background"
+        ></div>
+
+
+        <!-- =================================
+             SINGLE PHOTO SCENE
+        ================================== -->
+
+        <section
+            id="singleScene"
+            class="scene single-scene hidden"
+        >
+
+            <img
+                id="singlePhoto"
+                class="single-photo"
+                alt=""
+            >
+
+        </section>
+
+
+        <!-- =================================
+             TWO PHOTO SCENE
+        ================================== -->
+
+        <section
+            id="doubleScene"
+            class="scene double-scene hidden"
+        >
+
+            <div class="double-photo-card">
+
+                <img
+                    id="doublePhoto1"
+                    alt=""
+                >
+
+            </div>
+
+            <div class="double-photo-card">
+
+                <img
+                    id="doublePhoto2"
+                    alt=""
+                >
+
+            </div>
+
+        </section>
+
+
+        <!-- =================================
+             THREE PHOTO SCENE
+        ================================== -->
+
+        <section
+            id="tripleScene"
+            class="scene triple-scene hidden"
+        >
+
+            <div class="triple-photo-card main-card">
+
+                <img
+                    id="triplePhoto1"
+                    alt=""
+                >
+
+            </div>
+
+            <div class="triple-side">
+
+                <div class="triple-photo-card">
+
+                    <img
+                        id="triplePhoto2"
+                        alt=""
+                    >
+
+                </div>
+
+                <div class="triple-photo-card">
+
+                    <img
+                        id="triplePhoto3"
+                        alt=""
+                    >
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- =================================
+             TEXT / TITLE SCENE
+        ================================== -->
+
+        <section
+            id="titleScene"
+            class="scene title-scene hidden"
+        >
+
+            <div class="title-decoration">
+                🌺 🌴 🎄
+            </div>
+
+            <h1 id="titleMain">
+                Aloha Christmas
+            </h1>
+
+            <h2 id="titleSecondary">
+                2026
+            </h2>
+
+            <p id="titleSubtext">
+                Memories Made Together
+            </p>
+
+        </section>
+
+
+        <!-- =================================
+             FADE TO BLACK
+        ================================== -->
+
+        <div
+            id="blackout"
+            class="blackout"
+        ></div>
+
+
+        <!-- =================================
+             CINEMATIC CONTROLS
+        ================================== -->
+
+        <div class="cinematic-controls">
+
+            <button
+                id="restartButton"
+                type="button"
+                title="Restart"
+            >
+                ↻
+            </button>
+
+            <button
+                id="pauseButton"
+                type="button"
+                title="Pause"
+            >
+                ❚❚
+            </button>
+
+            <button
+                id="fullscreenButton"
+                type="button"
+                title="Fullscreen"
+            >
+                ⛶
+            </button>
+
+        </div>
+
+
+        <div
+            id="timeDisplay"
+            class="time-display"
+        >
+            00:00
+        </div>
+
+    </main>
+
+
+    <!-- =====================================
+         AUDIO
+    ====================================== -->
+    
+    <audio
+        id="soundtrack"
+        src="aloha-christmas.mp3"
+        preload="auto"
+    ></audio>
+    
+
+    <!-- Supabase -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    
+    <!-- Cinematic SDE -->
+    <script src="cinematic.js"></script>
+
+</body>
+
+</html>

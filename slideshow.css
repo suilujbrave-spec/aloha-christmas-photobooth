@@ -1,0 +1,590 @@
+/* =========================================
+   RESET
+========================================= */
+
+* {
+    box-sizing: border-box;
+}
+
+html,
+body {
+    width: 100%;
+    height: 100%;
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+}
+
+body {
+    font-family:
+        system-ui,
+        -apple-system,
+        BlinkMacSystemFont,
+        "Segoe UI",
+        sans-serif;
+
+    background: black;
+    color: white;
+}
+
+button,
+input {
+    font: inherit;
+}
+
+.hidden {
+    display: none !important;
+}
+
+
+/* =========================================
+   LOGIN SCREEN
+========================================= */
+
+.login-screen {
+    width: 100%;
+    min-height: 100vh;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    padding: 24px;
+
+    background:
+        linear-gradient(
+            180deg,
+            #053f46 0%,
+            #007f82 50%,
+            #02474f 100%
+        );
+}
+
+.login-card {
+    width: 100%;
+    max-width: 420px;
+
+    padding: 36px 30px;
+
+    text-align: center;
+
+    border-radius: 28px;
+
+    background:
+        rgba(0, 0, 0, 0.24);
+
+    border:
+        1px solid
+        rgba(255, 255, 255, 0.18);
+
+    box-shadow:
+        0 25px 70px
+        rgba(0, 0, 0, 0.35);
+}
+
+.aloha-icon {
+    margin-bottom: 12px;
+    font-size: 3rem;
+}
+
+.login-card h1 {
+    margin: 0;
+
+    font-size: 2rem;
+
+    text-transform: uppercase;
+}
+
+.login-card h2 {
+    margin: 5px 0 0;
+
+    color: #ffd447;
+
+    font-size: 1.3rem;
+}
+
+.login-card > p {
+    margin: 8px 0 25px;
+
+    color:
+        rgba(255, 255, 255, 0.72);
+}
+
+.login-card form {
+    display: flex;
+    flex-direction: column;
+
+    gap: 12px;
+}
+
+.login-card input {
+    width: 100%;
+
+    padding: 14px 15px;
+
+    border:
+        1px solid
+        rgba(255, 255, 255, 0.24);
+
+    border-radius: 13px;
+
+    background:
+        rgba(255, 255, 255, 0.10);
+
+    color: white;
+
+    outline: none;
+}
+
+.login-card input::placeholder {
+    color:
+        rgba(255, 255, 255, 0.48);
+}
+
+.login-card input:focus {
+    border-color: #ffd447;
+}
+
+.login-card button {
+    margin-top: 6px;
+
+    padding: 14px;
+
+    border: 0;
+    border-radius: 999px;
+
+    background: #ffd447;
+
+    color: #063f44;
+
+    font-weight: 800;
+
+    cursor: pointer;
+}
+
+.login-card button:hover {
+    background: #ffe06a;
+}
+
+.login-card button:disabled {
+    opacity: 0.6;
+    cursor: wait;
+}
+
+.error-message {
+    margin-top: 15px !important;
+
+    padding: 12px;
+
+    border-radius: 12px;
+
+    background:
+        rgba(170, 0, 0, 0.32);
+
+    color: #ffe5e5;
+}
+
+
+/* =========================================
+   SLIDESHOW
+========================================= */
+
+.slideshow-screen {
+    position: relative;
+
+    width: 100vw;
+    height: 100vh;
+
+    overflow: hidden;
+
+    background: black;
+}
+
+
+/* =========================================
+   BLURRED BACKGROUND PHOTO
+========================================= */
+
+.photo-background {
+    position: absolute;
+
+    inset: -40px;
+
+    z-index: 1;
+
+    background-position: center;
+    background-size: cover;
+    background-repeat: no-repeat;
+
+    filter:
+        blur(32px)
+        brightness(0.35)
+        saturate(1.15);
+
+    transform: scale(1.12);
+
+    opacity: 0;
+
+    transition:
+        opacity 1.3s ease;
+}
+
+.photo-background.visible {
+    opacity: 1;
+}
+
+
+/* =========================================
+   MAIN PHOTO STAGE
+========================================= */
+
+.photo-stage {
+    position: absolute;
+
+    inset: 0;
+
+    z-index: 2;
+
+    display: flex;
+
+    align-items: center;
+    justify-content: center;
+
+    padding: 2.5vh 2.5vw;
+
+    opacity: 1;
+
+    transition:
+        opacity 0.8s ease;
+}
+
+.photo-stage.fade-out {
+    opacity: 0;
+}
+
+.main-photo {
+    display: block;
+
+    width: auto;
+    height: auto;
+
+    max-width: 100%;
+    max-height: 100%;
+
+    object-fit: contain;
+
+    border-radius: 6px;
+
+    box-shadow:
+        0 25px 80px
+        rgba(0, 0, 0, 0.55);
+
+    animation:
+        gentleZoom
+        7s
+        ease-out
+        forwards;
+}
+
+@keyframes gentleZoom {
+
+    from {
+        transform: scale(1);
+    }
+
+    to {
+        transform: scale(1.035);
+    }
+}
+
+
+/* =========================================
+   TITLE CARD
+========================================= */
+
+.title-card {
+    position: absolute;
+
+    inset: 0;
+
+    z-index: 4;
+
+    display: flex;
+    flex-direction: column;
+
+    align-items: center;
+    justify-content: center;
+
+    text-align: center;
+
+    background:
+        radial-gradient(
+            circle at center,
+            #07868a 0%,
+            #034c53 50%,
+            #012b30 100%
+        );
+}
+
+.title-decoration {
+    margin-bottom: 16px;
+
+    font-size:
+        clamp(
+            2.5rem,
+            5vw,
+            5rem
+        );
+}
+
+.title-card h1 {
+    margin: 0;
+
+    color: white;
+
+    font-size:
+        clamp(
+            3rem,
+            8vw,
+            8rem
+        );
+
+    line-height: 0.95;
+
+    text-transform: uppercase;
+
+    letter-spacing: 0.03em;
+}
+
+.title-card h2 {
+    margin: 10px 0 0;
+
+    color: #ffd447;
+
+    font-size:
+        clamp(
+            2rem,
+            5vw,
+            5rem
+        );
+}
+
+.title-card p {
+    margin: 22px 0 0;
+
+    color:
+        rgba(255, 255, 255, 0.78);
+
+    font-size:
+        clamp(
+            1rem,
+            2vw,
+            1.8rem
+        );
+
+    text-transform: uppercase;
+
+    letter-spacing: 0.15em;
+}
+
+
+/* =========================================
+   WAITING SCREEN
+========================================= */
+
+.waiting-screen {
+    position: absolute;
+
+    inset: 0;
+
+    z-index: 5;
+
+    display: flex;
+
+    align-items: center;
+    justify-content: center;
+
+    background:
+        linear-gradient(
+            135deg,
+            #03464d,
+            #007f82,
+            #02474f
+        );
+}
+
+.waiting-content {
+    text-align: center;
+}
+
+.waiting-icon {
+    font-size: 5rem;
+}
+
+.waiting-content h1 {
+    margin: 12px 0 5px;
+
+    text-transform: uppercase;
+}
+
+.waiting-content p {
+    margin: 0;
+
+    color:
+        rgba(255, 255, 255, 0.72);
+}
+
+
+/* =========================================
+   STATUS BAR
+========================================= */
+
+.slideshow-status {
+    position: absolute;
+
+    top: 18px;
+    left: 20px;
+    right: 20px;
+
+    z-index: 10;
+
+    display: flex;
+
+    align-items: center;
+    justify-content: space-between;
+
+    pointer-events: none;
+
+    opacity: 0;
+
+    transition:
+        opacity 0.25s ease;
+}
+
+.slideshow-screen:hover
+.slideshow-status {
+    opacity: 1;
+}
+
+.slideshow-status span {
+    padding: 7px 11px;
+
+    border-radius: 999px;
+
+    background:
+        rgba(0, 0, 0, 0.48);
+
+    font-size: 0.76rem;
+
+    backdrop-filter:
+        blur(8px);
+}
+
+.live-indicator {
+    color: #6cff9c;
+}
+
+
+/* =========================================
+   SLIDESHOW CONTROLS
+========================================= */
+
+.slideshow-controls {
+    position: absolute;
+
+    left: 50%;
+    bottom: 20px;
+
+    z-index: 10;
+
+    display: flex;
+
+    gap: 8px;
+
+    padding: 7px;
+
+    transform:
+        translateX(-50%);
+
+    opacity: 0;
+
+    transition:
+        opacity 0.25s ease;
+
+    border-radius: 999px;
+
+    background:
+        rgba(0, 0, 0, 0.46);
+
+    backdrop-filter:
+        blur(10px);
+}
+
+.slideshow-screen:hover
+.slideshow-controls {
+    opacity: 1;
+}
+
+.slideshow-controls button {
+    width: 46px;
+    height: 46px;
+
+    padding: 0;
+
+    border:
+        1px solid
+        rgba(255, 255, 255, 0.18);
+
+    border-radius: 50%;
+
+    background:
+        rgba(255, 255, 255, 0.10);
+
+    color: white;
+
+    cursor: pointer;
+
+    font-size: 1rem;
+}
+
+.slideshow-controls button:hover {
+    background:
+        rgba(255, 255, 255, 0.22);
+}
+
+.slideshow-controls button:active {
+    transform: scale(0.94);
+}
+
+
+/* =========================================
+   FULLSCREEN
+========================================= */
+
+:fullscreen
+.slideshow-status {
+    top: 24px;
+}
+
+
+/* =========================================
+   SMALL SCREEN
+========================================= */
+
+@media (max-width: 700px) {
+
+    .photo-stage {
+        padding: 10px;
+    }
+
+    .slideshow-controls {
+        bottom: 12px;
+
+        opacity: 0.85;
+    }
+
+    .slideshow-controls button {
+        width: 42px;
+        height: 42px;
+    }
+}

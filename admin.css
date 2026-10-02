@@ -1,0 +1,692 @@
+/* =========================================
+   RESET
+========================================= */
+
+* {
+    box-sizing: border-box;
+}
+
+html,
+body {
+    margin: 0;
+    padding: 0;
+    min-height: 100%;
+}
+
+body {
+    min-height: 100vh;
+
+    font-family:
+        system-ui,
+        -apple-system,
+        BlinkMacSystemFont,
+        "Segoe UI",
+        sans-serif;
+
+    background:
+        linear-gradient(
+            180deg,
+            #053f46 0%,
+            #007f82 45%,
+            #02474f 100%
+        );
+
+    color: white;
+}
+
+button,
+input {
+    font: inherit;
+}
+
+button {
+    cursor: pointer;
+}
+
+.hidden {
+    display: none !important;
+}
+
+
+/* =========================================
+   MAIN
+========================================= */
+
+.admin-app {
+    width: 100%;
+
+    min-height: 100vh;
+}
+
+
+/* =========================================
+   LOGIN
+========================================= */
+
+.login-screen {
+    min-height: 100vh;
+
+    display: flex;
+
+    align-items: center;
+    justify-content: center;
+
+    padding: 20px;
+}
+
+
+.login-card {
+    width: 100%;
+    max-width: 420px;
+
+    padding: 34px 28px;
+
+    border:
+        1px solid
+        rgba(255,255,255,0.18);
+
+    border-radius: 26px;
+
+    background:
+        rgba(0,0,0,0.22);
+
+    box-shadow:
+        0 20px 50px
+        rgba(0,0,0,0.30);
+}
+
+
+.login-icon {
+    margin-bottom: 10px;
+
+    text-align: center;
+
+    font-size: 3rem;
+}
+
+
+.login-card h1 {
+    margin: 0;
+
+    text-align: center;
+
+    font-size: 1.8rem;
+
+    text-transform: uppercase;
+}
+
+
+.login-card h2 {
+    margin: 4px 0 0;
+
+    text-align: center;
+
+    color: #ffd447;
+
+    font-size: 1.2rem;
+}
+
+
+.login-card > p {
+    margin: 6px 0 26px;
+
+    text-align: center;
+
+    color:
+        rgba(255,255,255,0.7);
+}
+
+
+.login-card form {
+    display: flex;
+
+    flex-direction: column;
+
+    gap: 9px;
+}
+
+
+.login-card label {
+    margin-top: 8px;
+
+    font-size: 0.83rem;
+
+    font-weight: 700;
+}
+
+
+.login-card input {
+    width: 100%;
+
+    padding: 13px 14px;
+
+    border:
+        1px solid
+        rgba(255,255,255,0.25);
+
+    border-radius: 12px;
+
+    outline: none;
+
+    background:
+        rgba(255,255,255,0.10);
+
+    color: white;
+}
+
+
+.login-card input:focus {
+    border-color: #ffd447;
+}
+
+
+.primary-button {
+    margin-top: 15px;
+
+    padding: 13px 22px;
+
+    border: 0;
+    border-radius: 999px;
+
+    background: #ffd447;
+
+    color: #063f44;
+
+    font-weight: 800;
+}
+
+
+.error-message {
+    margin: 15px 0 0;
+
+    padding: 12px;
+
+    border-radius: 12px;
+
+    background:
+        rgba(170,0,0,0.3);
+
+    color: #ffe4e4;
+
+    text-align: center;
+}
+
+
+/* =========================================
+   MANAGER
+========================================= */
+
+.manager-screen {
+    width: 100%;
+
+    max-width: 1500px;
+
+    margin: 0 auto;
+
+    padding:
+        max(18px, env(safe-area-inset-top))
+        18px
+        40px;
+}
+
+
+/* =========================================
+   HEADER
+========================================= */
+
+.admin-header {
+    display: flex;
+
+    align-items: center;
+    justify-content: space-between;
+
+    gap: 16px;
+
+    margin-bottom: 22px;
+}
+
+
+.admin-header h1 {
+    margin: 0;
+
+    font-size: 1.6rem;
+
+    text-transform: uppercase;
+}
+
+
+.admin-header p {
+    margin: 4px 0 0;
+
+    color:
+        rgba(255,255,255,0.72);
+}
+
+
+.header-actions {
+    display: flex;
+
+    gap: 8px;
+}
+
+
+.icon-button,
+.logout-button {
+    border:
+        1px solid
+        rgba(255,255,255,0.25);
+
+    background:
+        rgba(255,255,255,0.12);
+
+    color: white;
+}
+
+
+.icon-button {
+    width: 44px;
+    height: 44px;
+
+    border-radius: 50%;
+
+    font-size: 1.4rem;
+}
+
+
+.logout-button {
+    padding: 10px 16px;
+
+    border-radius: 999px;
+
+    font-weight: 700;
+}
+
+
+/* =========================================
+   STAT CARDS
+========================================= */
+
+.stats {
+    display: grid;
+
+    grid-template-columns:
+        repeat(3, 1fr);
+
+    gap: 12px;
+
+    margin-bottom: 22px;
+}
+
+
+.stat-card {
+    min-height: 90px;
+
+    padding: 12px;
+
+    border:
+        2px solid
+        transparent;
+
+    border-radius: 18px;
+
+    background:
+        rgba(255,255,255,0.10);
+
+    color: white;
+}
+
+
+.stat-card.active {
+    border-color:
+        #ffd447;
+
+    background:
+        rgba(255,212,71,0.13);
+}
+
+
+.stat-number {
+    display: block;
+
+    color: #ffd447;
+
+    font-size: 2rem;
+
+    font-weight: 800;
+}
+
+
+.stat-label {
+    display: block;
+
+    margin-top: 2px;
+
+    font-size: 0.85rem;
+
+    text-transform: uppercase;
+
+    letter-spacing: 0.05em;
+}
+
+
+/* =========================================
+   STATUS
+========================================= */
+
+.manager-status {
+    margin-bottom: 14px;
+
+    color:
+        rgba(255,255,255,0.7);
+
+    font-size: 0.86rem;
+}
+
+
+/* =========================================
+   PHOTO GRID
+========================================= */
+
+.photo-grid {
+    display: grid;
+
+    grid-template-columns:
+        repeat(
+            auto-fill,
+            minmax(240px, 1fr)
+        );
+
+    gap: 18px;
+}
+
+
+/* =========================================
+   PHOTO CARD
+========================================= */
+
+.photo-card {
+    overflow: hidden;
+
+    border:
+        1px solid
+        rgba(255,255,255,0.16);
+
+    border-radius: 20px;
+
+    background:
+        rgba(0,0,0,0.22);
+
+    box-shadow:
+        0 12px 30px
+        rgba(0,0,0,0.18);
+}
+
+
+.photo-image-wrapper {
+    position: relative;
+
+    width: 100%;
+
+    background: #00191c;
+}
+
+
+.photo-image-wrapper.portrait {
+    aspect-ratio: 9 / 16;
+}
+
+
+.photo-image-wrapper.landscape {
+    aspect-ratio: 16 / 9;
+}
+
+
+.photo-image {
+    display: block;
+
+    width: 100%;
+    height: 100%;
+
+    object-fit: contain;
+
+    background: black;
+}
+
+
+.mode-badge {
+    position: absolute;
+
+    top: 10px;
+    left: 10px;
+
+    padding: 5px 9px;
+
+    border-radius: 999px;
+
+    background:
+        rgba(0,0,0,0.64);
+
+    color: white;
+
+    font-size: 0.72rem;
+
+    font-weight: 700;
+
+    text-transform: uppercase;
+}
+
+
+/* =========================================
+   PHOTO INFO
+========================================= */
+
+.photo-info {
+    padding: 13px;
+}
+
+
+.photo-time {
+    margin: 0;
+
+    color:
+        rgba(255,255,255,0.72);
+
+    font-size: 0.8rem;
+}
+
+
+.photo-id {
+    margin: 4px 0 0;
+
+    color:
+        rgba(255,255,255,0.48);
+
+    font-size: 0.68rem;
+
+    overflow-wrap: anywhere;
+}
+
+
+/* =========================================
+   MODERATION BUTTONS
+========================================= */
+
+.photo-actions {
+    display: grid;
+
+    grid-template-columns:
+        1fr 1fr;
+
+    gap: 8px;
+
+    padding:
+        0 13px 13px;
+}
+
+
+.photo-action {
+    padding: 10px;
+
+    border: 0;
+
+    border-radius: 12px;
+
+    font-weight: 800;
+}
+
+
+.approve-button {
+    background: #39d98a;
+
+    color: #023d29;
+}
+
+
+.hide-button {
+    background:
+        rgba(255,255,255,0.13);
+
+    color: white;
+
+    border:
+        1px solid
+        rgba(255,255,255,0.23);
+}
+
+
+.pending-button {
+    background: #ffd447;
+
+    color: #063f44;
+}
+
+
+.photo-action:disabled {
+    opacity: 0.45;
+
+    cursor: wait;
+}
+
+
+/* =========================================
+   EMPTY STATE
+========================================= */
+
+.empty-state {
+    padding:
+        80px 20px;
+
+    text-align: center;
+}
+
+
+.empty-icon {
+    font-size: 3.5rem;
+}
+
+
+.empty-state h2 {
+    margin:
+        10px 0 5px;
+}
+
+
+.empty-state p {
+    margin: 0;
+
+    color:
+        rgba(255,255,255,0.65);
+}
+
+
+/* =========================================
+   TABLET / PHONE
+========================================= */
+
+@media (max-width: 700px) {
+
+    .manager-screen {
+        padding-left: 12px;
+        padding-right: 12px;
+    }
+
+
+    .admin-header {
+        align-items: flex-start;
+    }
+
+
+    .admin-header h1 {
+        font-size: 1.25rem;
+    }
+
+
+    .logout-button {
+        padding:
+            9px 12px;
+
+        font-size:
+            0.8rem;
+    }
+
+
+    .stats {
+        gap: 7px;
+    }
+
+
+    .stat-card {
+        min-height: 76px;
+
+        padding: 9px 4px;
+    }
+
+
+    .stat-number {
+        font-size: 1.5rem;
+    }
+
+
+    .stat-label {
+        font-size: 0.7rem;
+    }
+
+
+    .photo-grid {
+        grid-template-columns:
+            repeat(
+                2,
+                minmax(0, 1fr)
+            );
+
+        gap: 10px;
+    }
+
+
+    .photo-info {
+        padding: 9px;
+    }
+
+
+    .photo-actions {
+        grid-template-columns: 1fr;
+
+        padding:
+            0 9px 9px;
+    }
+
+
+    .photo-action {
+        font-size: 0.8rem;
+    }
+
+}
+
+
+@media (max-width: 390px) {
+
+    .photo-grid {
+        grid-template-columns: 1fr;
+    }
+
+}

@@ -1,0 +1,1110 @@
+/* =========================================
+   ALOHA CHRISTMAS PHOTOBOOTH
+========================================= */
+
+
+/* =========================================
+   RESET
+========================================= */
+
+* {
+    box-sizing: border-box;
+}
+
+html,
+body {
+    margin: 0;
+    padding: 0;
+
+    min-height: 100%;
+}
+
+body {
+    min-height: 100vh;
+
+    font-family:
+        system-ui,
+        -apple-system,
+        BlinkMacSystemFont,
+        "Segoe UI",
+        sans-serif;
+
+    background:
+        linear-gradient(
+            180deg,
+            #053f46 0%,
+            #007f82 45%,
+            #02474f 100%
+        );
+
+    color: white;
+}
+
+
+/* =========================================
+   MAIN APP
+========================================= */
+
+.booth {
+    width: 100%;
+    max-width: 520px;
+
+    min-height: 100vh;
+
+    margin: 0 auto;
+
+    padding:
+        max(12px, env(safe-area-inset-top))
+        12px
+        max(20px, env(safe-area-inset-bottom));
+
+    display: flex;
+    flex-direction: column;
+}
+
+
+/* =========================================
+   SCREENS
+========================================= */
+
+.screen {
+    width: 100%;
+}
+
+.hidden {
+    display: none !important;
+}
+
+
+/* =========================================
+   MODE SCREEN
+========================================= */
+
+.mode-screen {
+    width: 100%;
+    min-height: 90vh;
+
+    display: flex;
+    flex-direction: column;
+
+    align-items: center;
+    justify-content: center;
+
+    padding: 30px 16px;
+}
+
+
+.mode-heading {
+    width: 100%;
+
+    margin-bottom: 28px;
+
+    text-align: center;
+}
+
+
+.mode-heading h1 {
+    margin: 0;
+
+    font-size: 2rem;
+    line-height: 1.1;
+
+    text-transform: uppercase;
+}
+
+
+.mode-heading p {
+    margin: 8px 0 0;
+
+    color:
+        rgba(255, 255, 255, 0.8);
+}
+
+
+.mode-options {
+    width: 100%;
+    max-width: 500px;
+
+    display: grid;
+
+    grid-template-columns: 1fr;
+
+    gap: 16px;
+}
+
+
+.mode-button {
+    width: 100%;
+    min-height: 170px;
+
+    padding: 22px;
+
+    display: flex;
+    flex-direction: column;
+
+    align-items: center;
+    justify-content: center;
+
+    gap: 8px;
+
+    border:
+        2px solid
+        rgba(255, 255, 255, 0.25);
+
+    border-radius: 24px;
+
+    background:
+        rgba(255, 255, 255, 0.12);
+
+    color: white;
+
+    text-align: center;
+
+    cursor: pointer;
+}
+
+
+.mode-button:hover {
+    background:
+        rgba(255, 255, 255, 0.18);
+}
+
+
+.mode-button:active {
+    transform: scale(0.97);
+}
+
+
+.mode-icon {
+    display: block;
+
+    margin-bottom: 4px;
+
+    font-size: 3.2rem;
+}
+
+
+.mode-button strong {
+    font-size: 1.25rem;
+}
+
+
+.mode-button small {
+    display: block;
+
+    max-width: 220px;
+
+    line-height: 1.4;
+
+    color:
+        rgba(255, 255, 255, 0.72);
+}
+
+
+/* =========================================
+   TOP BAR
+========================================= */
+
+.top-bar {
+    display: flex;
+
+    align-items: center;
+
+    gap: 8px;
+
+    margin-bottom: 12px;
+}
+
+
+.top-bar > div:first-child {
+    flex: 1;
+}
+
+
+.top-bar h1,
+.preview-heading h1 {
+    margin: 0;
+
+    font-size: 1.55rem;
+    line-height: 1.1;
+
+    text-transform: uppercase;
+}
+
+
+.top-bar p,
+.preview-heading p {
+    margin: 4px 0 0;
+
+    color:
+        rgba(255, 255, 255, 0.82);
+
+    font-size: 0.92rem;
+}
+
+
+/* =========================================
+   CAMERA
+========================================= */
+
+.camera-container {
+    position: relative;
+
+    width: 100%;
+
+    overflow: hidden;
+
+    border-radius: 22px;
+
+    background: black;
+
+    box-shadow:
+        0 15px 40px
+        rgba(0, 0, 0, 0.35);
+}
+
+
+.camera-container.portrait {
+    aspect-ratio: 9 / 16;
+}
+
+
+.camera-container.landscape {
+    aspect-ratio: 16 / 9;
+}
+
+
+#camera {
+    position: absolute;
+
+    inset: 0;
+
+    width: 100%;
+    height: 100%;
+
+    object-fit: cover;
+
+    background: black;
+
+    z-index: 1;
+}
+
+
+#camera.selfie {
+    transform: scaleX(-1);
+}
+
+
+/* =========================================
+   FRAME
+========================================= */
+
+.photo-frame {
+    position: absolute;
+
+    inset: 0;
+
+    width: 100%;
+    height: 100%;
+
+    object-fit: fill;
+
+    pointer-events: none;
+
+    z-index: 2;
+}
+
+
+/* =========================================
+   CAMERA MESSAGE
+========================================= */
+
+.camera-message {
+    position: absolute;
+
+    inset: 0;
+
+    z-index: 5;
+
+    display: flex;
+    flex-direction: column;
+
+    justify-content: center;
+    align-items: center;
+
+    gap: 16px;
+
+    padding: 30px;
+
+    text-align: center;
+
+    background:
+        linear-gradient(
+            180deg,
+            rgba(0, 45, 51, 0.92),
+            rgba(0, 20, 25, 0.94)
+        );
+}
+
+
+.camera-message p {
+    max-width: 280px;
+
+    margin: 0;
+
+    line-height: 1.5;
+}
+
+
+/* =========================================
+   CAMERA CONTROLS
+========================================= */
+
+.camera-controls {
+    display: flex;
+    flex-direction: column;
+
+    align-items: center;
+
+    padding-top: 16px;
+}
+
+
+/* =========================================
+   TIMER
+========================================= */
+
+.timer-controls {
+    width: 100%;
+
+    display: flex;
+    flex-direction: column;
+
+    align-items: center;
+
+    gap: 7px;
+
+    margin-bottom: 14px;
+}
+
+
+.timer-label {
+    font-size: 0.75rem;
+
+    text-transform: uppercase;
+
+    letter-spacing: 0.1em;
+
+    color:
+        rgba(255, 255, 255, 0.7);
+}
+
+
+.timer-buttons {
+    display: flex;
+
+    gap: 8px;
+
+    padding: 5px;
+
+    border-radius: 999px;
+
+    background:
+        rgba(0, 0, 0, 0.18);
+}
+
+
+.timer-button {
+    min-width: 54px;
+
+    padding: 8px 14px;
+
+    border: 0;
+    border-radius: 999px;
+
+    background: transparent;
+
+    color:
+        rgba(255, 255, 255, 0.7);
+
+    font-family: inherit;
+
+    font-size: 0.82rem;
+    font-weight: 700;
+
+    cursor: pointer;
+}
+
+
+.timer-button.active {
+    background: #ffd447;
+
+    color: #063f44;
+
+    box-shadow:
+        0 3px 8px
+        rgba(0, 0, 0, 0.2);
+}
+
+
+/* =========================================
+   COUNTDOWN
+========================================= */
+
+.countdown-overlay {
+    position: absolute;
+
+    inset: 0;
+
+    z-index: 4;
+
+    display: flex;
+
+    align-items: center;
+    justify-content: center;
+
+    pointer-events: none;
+
+    background:
+        rgba(0, 0, 0, 0.18);
+}
+
+
+#countdownNumber {
+    display: flex;
+
+    align-items: center;
+    justify-content: center;
+
+    width: 130px;
+    height: 130px;
+
+    border-radius: 50%;
+
+    background:
+        rgba(0, 0, 0, 0.55);
+
+    border:
+        4px solid
+        rgba(255, 255, 255, 0.9);
+
+    color: white;
+
+    font-size: 5rem;
+    font-weight: 800;
+
+    line-height: 1;
+
+    box-shadow:
+        0 8px 30px
+        rgba(0, 0, 0, 0.35);
+}
+
+
+/* =========================================
+   SHUTTER
+========================================= */
+
+.shutter-button {
+    width: 76px;
+    height: 76px;
+
+    border:
+        4px solid white;
+
+    border-radius: 50%;
+
+    padding: 5px;
+
+    background: transparent;
+
+    cursor: pointer;
+}
+
+
+.shutter-button span {
+    display: block;
+
+    width: 100%;
+    height: 100%;
+
+    border-radius: 50%;
+
+    background: white;
+}
+
+
+.shutter-button:active span {
+    transform: scale(0.88);
+
+    background: #ffd447;
+}
+
+
+.shutter-button:disabled {
+    opacity: 0.35;
+
+    cursor: not-allowed;
+}
+
+
+.camera-controls > p {
+    margin: 7px 0 0;
+
+    color:
+        rgba(255, 255, 255, 0.85);
+
+    font-size: 0.85rem;
+}
+
+
+/* =========================================
+   BUTTONS
+========================================= */
+
+.primary-button,
+.secondary-button,
+.small-button,
+.another-button {
+    border: 0;
+
+    font-family: inherit;
+
+    font-weight: 700;
+
+    cursor: pointer;
+}
+
+
+.primary-button {
+    padding: 13px 22px;
+
+    border-radius: 999px;
+
+    background: #ffd447;
+
+    color: #063f44;
+
+    font-size: 0.95rem;
+}
+
+
+.secondary-button {
+    padding: 13px 22px;
+
+    border-radius: 999px;
+
+    background:
+        rgba(255, 255, 255, 0.14);
+
+    color: white;
+
+    border:
+        1px solid
+        rgba(255, 255, 255, 0.35);
+}
+
+
+.small-button {
+    flex: 0 0 auto;
+
+    width: 46px;
+    height: 46px;
+
+    padding: 0;
+
+    border-radius: 50%;
+
+    background:
+        rgba(255, 255, 255, 0.14);
+
+    color: white;
+
+    font-size: 1.2rem;
+
+    border:
+        1px solid
+        rgba(255, 255, 255, 0.28);
+
+    display: flex;
+
+    align-items: center;
+    justify-content: center;
+}
+
+
+.mode-change-button {
+    margin-left: auto;
+}
+
+
+button:disabled {
+    opacity: 0.5;
+
+    cursor: not-allowed;
+}
+
+
+/* =========================================
+   PHOTO PREVIEW
+========================================= */
+
+.preview-heading {
+    margin-bottom: 12px;
+
+    text-align: center;
+}
+
+
+.preview-container {
+    width: 100%;
+
+    aspect-ratio: 9 / 16;
+
+    overflow: hidden;
+
+    border-radius: 22px;
+
+    background: black;
+
+    box-shadow:
+        0 15px 40px
+        rgba(0, 0, 0, 0.35);
+}
+
+
+#photoPreview {
+    display: block;
+
+    width: 100%;
+    height: 100%;
+
+    object-fit: contain;
+
+    background: black;
+}
+
+
+/* =========================================
+   PREVIEW ACTIONS
+========================================= */
+
+.preview-actions {
+    display: grid;
+
+    grid-template-columns:
+        1fr 1.35fr;
+
+    gap: 12px;
+
+    margin-top: 16px;
+}
+
+
+.preview-actions button {
+    width: 100%;
+}
+
+
+.party-button {
+    font-size: 1rem;
+}
+
+
+/* =========================================
+   UPLOAD STATUS
+========================================= */
+
+.upload-status {
+    min-height: 62px;
+
+    margin-top: 16px;
+
+    padding: 13px 16px;
+
+    display: flex;
+
+    align-items: center;
+    justify-content: center;
+
+    gap: 12px;
+
+    border-radius: 16px;
+
+    background:
+        rgba(0, 0, 0, 0.2);
+
+    text-align: center;
+}
+
+
+.upload-spinner {
+    width: 22px;
+    height: 22px;
+
+    flex: 0 0 22px;
+
+    border:
+        3px solid
+        rgba(255, 255, 255, 0.25);
+
+    border-top-color:
+        #ffd447;
+
+    border-radius: 50%;
+
+    animation:
+        spinnerRotate
+        0.75s
+        linear
+        infinite;
+}
+
+
+@keyframes spinnerRotate {
+
+    to {
+        transform: rotate(360deg);
+    }
+
+}
+
+
+.upload-error {
+    margin:
+        12px 0 0;
+
+    padding:
+        12px 14px;
+
+    border-radius: 14px;
+
+    background:
+        rgba(160, 0, 0, 0.32);
+
+    color:
+        #ffe5e5;
+
+    font-size:
+        0.88rem;
+
+    line-height:
+        1.45;
+
+    text-align:
+        center;
+}
+
+
+/* =========================================
+   SUCCESS SCREEN
+========================================= */
+
+.success-screen {
+    min-height: 94vh;
+
+    display: flex;
+
+    align-items: center;
+    justify-content: center;
+}
+
+
+.success-content {
+    width: 100%;
+
+    text-align: center;
+}
+
+
+.success-icon {
+    font-size: 3.5rem;
+
+    margin-bottom: 4px;
+}
+
+
+.success-content h1 {
+    margin:
+        0;
+
+    color:
+        #ffd447;
+
+    font-size:
+        2.4rem;
+
+    text-transform:
+        uppercase;
+}
+
+
+.success-content h2 {
+    margin:
+        8px 0;
+
+    font-size:
+        1.15rem;
+}
+
+
+.success-content > p {
+    max-width: 390px;
+
+    margin:
+        8px auto 18px;
+
+    color:
+        rgba(255, 255, 255, 0.78);
+
+    line-height:
+        1.5;
+}
+
+
+/* Uploaded photo preview */
+
+.success-preview {
+    width: 100%;
+
+    max-width: 380px;
+
+    margin:
+        0 auto 18px;
+
+    overflow: hidden;
+
+    border-radius: 20px;
+
+    background:
+        black;
+
+    box-shadow:
+        0 15px 40px
+        rgba(0, 0, 0, 0.35);
+}
+
+
+#successPhotoPreview {
+    display: block;
+
+    width: 100%;
+
+    max-height:
+        55vh;
+
+    object-fit:
+        contain;
+}
+
+
+/* Success buttons */
+
+.success-actions {
+    width: 100%;
+
+    max-width: 400px;
+
+    margin:
+        0 auto;
+
+    display: flex;
+
+    flex-direction: column;
+
+    gap: 10px;
+}
+
+
+.success-actions button {
+    width: 100%;
+}
+
+
+.another-button {
+    margin-top: 4px;
+
+    padding:
+        13px 22px;
+
+    border-radius:
+        999px;
+
+    background:
+        transparent;
+
+    color:
+        white;
+
+    border:
+        1px solid
+        rgba(255, 255, 255, 0.4);
+}
+
+
+/* =========================================
+   HIDDEN CANVAS
+========================================= */
+
+#photoCanvas {
+    display: none;
+}
+
+
+/* =========================================
+   LANDSCAPE MODE
+========================================= */
+
+body.landscape-mode .booth {
+    max-width: 1000px;
+}
+
+
+body.landscape-mode #countdownNumber {
+    width: 110px;
+    height: 110px;
+
+    font-size: 4rem;
+}
+
+
+/* =========================================
+   DESKTOP
+========================================= */
+
+@media (min-width: 700px) {
+
+    .mode-options {
+        max-width: 700px;
+
+        grid-template-columns:
+            1fr 1fr;
+    }
+
+
+    .mode-button {
+        min-height: 210px;
+    }
+
+}
+
+
+/* =========================================
+   SMALL PHONE
+========================================= */
+
+@media (max-width: 420px) {
+
+    .booth {
+        padding-left: 10px;
+        padding-right: 10px;
+    }
+
+
+    .mode-screen {
+        padding:
+            22px 8px;
+    }
+
+
+    .mode-heading h1 {
+        font-size: 1.7rem;
+    }
+
+
+    .mode-button {
+        min-height: 145px;
+
+        padding:
+            18px 12px;
+    }
+
+
+    .mode-icon {
+        font-size: 2.7rem;
+    }
+
+
+    .top-bar h1 {
+        font-size: 1.25rem;
+    }
+
+
+    .small-button {
+        width: 42px;
+        height: 42px;
+    }
+
+
+    .shutter-button {
+        width: 70px;
+        height: 70px;
+    }
+
+
+    .preview-actions {
+        grid-template-columns: 1fr;
+    }
+
+}
+
+
+/* =========================================
+   LANDSCAPE PHONE
+========================================= */
+
+@media (orientation: landscape)
+and (max-height: 600px) {
+
+    body.landscape-mode .booth {
+        max-width: 900px;
+
+        padding-top: 8px;
+    }
+
+
+    body.landscape-mode .top-bar {
+        margin-bottom: 6px;
+    }
+
+
+    body.landscape-mode .top-bar p {
+        display: none;
+    }
+
+
+    body.landscape-mode .camera-container {
+        width: auto;
+
+        height:
+            calc(100vh - 165px);
+
+        max-width: 100%;
+
+        margin:
+            0 auto;
+    }
+
+
+    body.landscape-mode .camera-controls {
+        padding-top: 6px;
+    }
+
+
+    body.landscape-mode .timer-controls {
+        margin-bottom: 5px;
+    }
+
+
+    body.landscape-mode .shutter-button {
+        width: 56px;
+        height: 56px;
+    }
+
+
+    body.landscape-mode
+    .camera-controls > p {
+        display: none;
+    }
+
+}

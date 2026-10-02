@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0, viewport-fit=cover"
+    >
+
+    <title>Aloha Christmas Photo Manager</title>
+
+    <link rel="stylesheet" href="admin.css">
+
+</head>
+
+<body>
+
+    <main class="admin-app">
+
+        <!-- LOGIN SCREEN -->
+
+        <section
+            id="loginScreen"
+            class="login-screen"
+        >
+
+            <div class="login-card">
+
+                <div class="login-icon">
+                    🌺🎄
+                </div>
+
+                <h1>
+                    Aloha Christmas
+                </h1>
+
+                <h2>
+                    Photo Manager
+                </h2>
+
+                <p>
+                    Organizer access only
+                </p>
+
+                <form id="loginForm">
+
+                    <label for="email">
+                        Email
+                    </label>
+
+                    <input
+                        id="email"
+                        type="email"
+                        autocomplete="email"
+                        required
+                    >
+
+                    <label for="password">
+                        Password
+                    </label>
+
+                    <input
+                        id="password"
+                        type="password"
+                        autocomplete="current-password"
+                        required
+                    >
+
+                    <button
+                        id="loginButton"
+                        class="primary-button"
+                        type="submit"
+                    >
+                        Sign In
+                    </button>
+
+                </form>
+
+                <p
+                    id="loginError"
+                    class="error-message hidden"
+                ></p>
+
+            </div>
+
+        </section>
+
+
+        <!-- MANAGER SCREEN -->
+
+        <section
+            id="managerScreen"
+            class="manager-screen hidden"
+        >
+
+            <header class="admin-header">
+
+                <div>
+
+                    <h1>
+                        🌺 Aloha Christmas 🎄
+                    </h1>
+
+                    <p>
+                        Photo Manager
+                    </p>
+
+                </div>
+
+                <div class="header-actions">
+
+                    <button
+                        id="refreshButton"
+                        class="icon-button"
+                        type="button"
+                        title="Refresh photos"
+                    >
+                        ↻
+                    </button>
+
+                    <button
+                        id="logoutButton"
+                        class="logout-button"
+                        type="button"
+                    >
+                        Sign Out
+                    </button>
+
+                </div>
+
+            </header>
+
+
+            <!-- COUNTERS -->
+
+            <div class="stats">
+
+                <button
+                    class="stat-card active"
+                    data-filter="pending"
+                >
+
+                    <span
+                        id="pendingCount"
+                        class="stat-number"
+                    >
+                        0
+                    </span>
+
+                    <span class="stat-label">
+                        Pending
+                    </span>
+
+                </button>
+
+
+                <button
+                    class="stat-card"
+                    data-filter="approved"
+                >
+
+                    <span
+                        id="approvedCount"
+                        class="stat-number"
+                    >
+                        0
+                    </span>
+
+                    <span class="stat-label">
+                        Approved
+                    </span>
+
+                </button>
+
+
+                <button
+                    class="stat-card"
+                    data-filter="hidden"
+                >
+
+                    <span
+                        id="hiddenCount"
+                        class="stat-number"
+                    >
+                        0
+                    </span>
+
+                    <span class="stat-label">
+                        Hidden
+                    </span>
+
+                </button>
+
+            </div>
+
+
+            <!-- STATUS / LOADING -->
+
+            <div
+                id="managerStatus"
+                class="manager-status"
+            >
+                Loading photos...
+            </div>
+
+
+            <!-- PHOTO GRID -->
+
+            <div
+                id="photoGrid"
+                class="photo-grid"
+            ></div>
+
+
+            <!-- EMPTY STATE -->
+
+            <div
+                id="emptyState"
+                class="empty-state hidden"
+            >
+
+                <div class="empty-icon">
+                    🌴
+                </div>
+
+                <h2>
+                    No photos here
+                </h2>
+
+                <p id="emptyStateText">
+                    No pending photos at the moment.
+                </p>
+
+            </div>
+
+        </section>
+
+    </main>
+
+
+    <!-- Supabase -->
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+    <!-- Admin -->
+
+    <script src="admin.js"></script>
+
+</body>
+
+</html>

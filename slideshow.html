@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>Aloha Christmas Live Slideshow</title>
+
+    <link rel="stylesheet" href="slideshow.css">
+</head>
+
+<body>
+
+    <!-- =====================================
+         LOGIN SCREEN
+    ====================================== -->
+
+    <section
+        id="loginScreen"
+        class="login-screen"
+    >
+
+        <div class="login-card">
+
+            <div class="aloha-icon">
+                🌺🎄🌴
+            </div>
+
+            <h1>Aloha Christmas</h1>
+
+            <h2>Live Slideshow</h2>
+
+            <p>
+                Sign in with the organizer account
+            </p>
+
+            <form id="loginForm">
+
+                <input
+                    id="email"
+                    type="email"
+                    placeholder="Email"
+                    autocomplete="email"
+                    required
+                >
+
+                <input
+                    id="password"
+                    type="password"
+                    placeholder="Password"
+                    autocomplete="current-password"
+                    required
+                >
+
+                <button
+                    id="loginButton"
+                    type="submit"
+                >
+                    Start Slideshow
+                </button>
+
+            </form>
+
+            <p
+                id="loginError"
+                class="error-message hidden"
+            ></p>
+
+        </div>
+
+    </section>
+
+
+    <!-- =====================================
+         SLIDESHOW
+    ====================================== -->
+
+    <main
+        id="slideshowScreen"
+        class="slideshow-screen hidden"
+    >
+
+        <!-- Background version of current photo -->
+
+        <div
+            id="photoBackground"
+            class="photo-background"
+        ></div>
+
+
+        <!-- Main photo -->
+
+        <div
+            id="photoStage"
+            class="photo-stage"
+        >
+
+            <img
+                id="mainPhoto"
+                class="main-photo"
+                alt=""
+            >
+
+        </div>
+
+
+        <!-- Event title card -->
+
+        <div
+            id="titleCard"
+            class="title-card hidden"
+        >
+
+            <div class="title-decoration">
+                🌺 🌴 🎄
+            </div>
+
+            <h1>
+                Aloha Christmas
+            </h1>
+
+            <h2>
+                2026
+            </h2>
+
+            <p>
+                Memories Made Together
+            </p>
+
+        </div>
+
+
+        <!-- Waiting screen -->
+
+        <div
+            id="waitingScreen"
+            class="waiting-screen hidden"
+        >
+
+            <div class="waiting-content">
+
+                <div class="waiting-icon">
+                    🌺🎄
+                </div>
+
+                <h1>
+                    Aloha Christmas
+                </h1>
+
+                <p>
+                    Waiting for approved party photos...
+                </p>
+
+            </div>
+
+        </div>
+
+
+        <!-- =====================================
+             TOP STATUS
+        ====================================== -->
+
+        <div class="slideshow-status">
+
+            <span id="photoCount">
+                0 approved photos
+            </span>
+
+            <span
+                id="liveIndicator"
+                class="live-indicator"
+            >
+                ● LIVE
+            </span>
+
+        </div>
+
+
+        <!-- =====================================
+             CONTROLS
+        ====================================== -->
+
+        <div
+            id="slideshowControls"
+            class="slideshow-controls"
+        >
+
+            <button
+                id="previousButton"
+                type="button"
+                title="Previous photo"
+            >
+                ◀
+            </button>
+
+            <button
+                id="pauseButton"
+                type="button"
+                title="Pause slideshow"
+            >
+                ❚❚
+            </button>
+
+            <button
+                id="nextButton"
+                type="button"
+                title="Next photo"
+            >
+                ▶
+            </button>
+
+            <button
+                id="fullscreenButton"
+                type="button"
+                title="Fullscreen"
+            >
+                ⛶
+            </button>
+
+        </div>
+
+    </main>
+
+
+    <!-- Supabase library -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+    <!-- Slideshow -->
+    <script src="slideshow.js"></script>
+
+</body>
+
+</html>
