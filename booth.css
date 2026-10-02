@@ -1315,3 +1315,227 @@ and (max-height: 650px) {
         font-size: 4rem;
     }
 }
+
+/* =========================================
+   AUTOMATIC PHONE ORIENTATION
+========================================= */
+
+
+/* =========================================
+   PORTRAIT DEVICE
+========================================= */
+
+@media (orientation: portrait) {
+
+    body.camera-active .booth {
+        width: 100vw;
+        height: 100dvh;
+        min-height: 100dvh;
+
+        padding: 0;
+    }
+
+
+    body.camera-active #cameraScreen {
+        width: 100vw;
+        height: 100dvh;
+    }
+
+
+    body.camera-active .camera-container {
+        width:
+            min(
+                100vw,
+                56.25dvh
+            );
+
+        height: 100dvh;
+
+        margin: 0 auto;
+
+        aspect-ratio: auto;
+
+        border-radius: 0;
+        box-shadow: none;
+    }
+
+
+    /*
+        Portrait controls stay along
+        the bottom of the camera.
+    */
+
+    body.camera-active
+    .camera-bottom-controls {
+        left: 0;
+        right: 0;
+
+        top: auto;
+
+        bottom:
+            max(
+                14px,
+                env(safe-area-inset-bottom)
+            );
+
+        width: 100%;
+
+        transform: none;
+
+        flex-direction: column;
+    }
+
+
+    body.camera-active
+    .timer-buttons {
+        flex-direction: row;
+
+        border-radius: 999px;
+    }
+
+
+    body.camera-active
+    .timer-label {
+        display: block;
+    }
+
+
+    body.camera-active
+    .camera-top-controls {
+        flex-direction: row;
+    }
+}
+
+
+/* =========================================
+   LANDSCAPE DEVICE
+========================================= */
+
+@media (orientation: landscape) {
+
+    body.camera-active .booth {
+        width: 100vw;
+        height: 100dvh;
+        min-height: 100dvh;
+
+        max-width: none;
+
+        padding: 0;
+        margin: 0;
+    }
+
+
+    body.camera-active #cameraScreen {
+        width: 100vw;
+        height: 100dvh;
+
+        overflow: hidden;
+    }
+
+
+    body.camera-active .camera-container {
+        width: 100vw;
+        height: 100dvh;
+
+        margin: 0;
+
+        aspect-ratio: auto;
+
+        border-radius: 0;
+        box-shadow: none;
+    }
+
+
+    /*
+        Landscape orientation buttons.
+    */
+
+    body.camera-active
+    .camera-top-controls {
+        top:
+            max(
+                10px,
+                env(safe-area-inset-top)
+            );
+
+        right:
+            max(
+                12px,
+                env(safe-area-inset-right)
+            );
+
+        flex-direction: column;
+    }
+
+
+    /*
+        Landscape shutter and timer
+        move to the right-hand side.
+    */
+
+    body.camera-active
+    .camera-bottom-controls {
+        left: auto;
+
+        right:
+            max(
+                15px,
+                env(safe-area-inset-right)
+            );
+
+        top: 50%;
+        bottom: auto;
+
+        width: auto;
+
+        transform:
+            translateY(-50%);
+
+        flex-direction: column;
+
+        gap: 10px;
+    }
+
+
+    body.camera-active
+    .camera-bottom-controls
+    .shutter-button {
+        order: 1;
+
+        width: 66px;
+        height: 66px;
+
+        flex-basis: 66px;
+    }
+
+
+    body.camera-active
+    .camera-bottom-controls
+    .timer-controls {
+        order: 2;
+    }
+
+
+    body.camera-active
+    .timer-label {
+        display: none;
+    }
+
+
+    body.camera-active
+    .timer-buttons {
+        flex-direction: column;
+
+        border-radius: 18px;
+    }
+
+
+    body.camera-active
+    .timer-button {
+        min-width: 46px;
+
+        padding:
+            7px
+            9px;
+    }
+}
