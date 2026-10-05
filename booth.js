@@ -107,6 +107,15 @@ const flashButton =
 const flashState =
     $("flashState");
 
+/* =========================================
+   ZOOM ELEMENTS
+========================================= */
+const zoomControls = $("zoomControls");
+const zoomSlider = $("zoomSlider");
+const zoomValue = $("zoomValue");
+const zoomMinLabel = $("zoomMinLabel");
+const zoomMaxLabel = $("zoomMaxLabel");
+
 
 /* =========================================
    MULTI-SHOT ELEMENTS
@@ -268,6 +277,17 @@ let cameraLightEnabled =
 
 let cameraLightSupported =
     false;
+
+/* =========================================
+   ZOOM STATE
+========================================= */
+const REQUESTED_ZOOM_MINIMUM = 0.5;
+const REQUESTED_ZOOM_MAXIMUM = 4;
+let zoomSupported = false;
+let zoomMinimum = 1;
+let zoomMaximum = 1;
+let zoomStep = 0.1;
+let currentZoom = 1;
 
 
 /* =========================================
@@ -686,6 +706,7 @@ async function getCameraStream() {
 
 
     await updateCameraLightCapability();
+    await updateZoomCapability();
 }
 
 
@@ -1243,6 +1264,92 @@ async function toggleCameraLight() {
     updateCameraLightButton();
 }
 
+
+/* =========================================
+   ZOOM CAPABILITY
+========================================= */
+async function updateZoomCapability() {
+    zoomSupported = false;
+
+    if (!currentStream) {
+        updateZoomUI();
+        return;
+    }
+
+    try {
+        const track = currentStream.getVideoTracks()[0];
+        if (!track || typeof track.getCapabilities !== "function") {
+            updateZoomUI();
+            return;
+        }
+
+        const capabilities = track.getCapabilities();
+        const zoom = capabilities.zoom;
+        console.log("Zoom capability:", zoom);
+
+        if (!zoom || typeof zoom.min !== "number" || typeof zoom.max !== "number") {
+            updateZoomUI();
+            return;
+        }
+
+        const uiMinimum = Math.max(REQUESTED_ZOOM_MINIMUM, zoom.min);
+        const uiMaximum = Math.min(REQUESTED_ZOOM_MAXIMUM, zoom.max);
+
+        if (uiMinimum > uiMaximum) {
+            updateZoomUI();
+            return;
+        }
+
+        zoomSupported = true;
+        zoomMinimum = uiMinimum;
+        zoomMaximum = uiMaximum;
+        zoomStep = typeof zoom.step === "number" && zoom.step > 0 ? zoom.step : 0.1;
+
+        zoomSlider.min = String(zoomMinimum);
+        zoomSlider.max = String(zoomMaximum);
+        zoomSlider.step = String(zoomStep);
+        zoomMinLabel.textContent = zoomMinimum.toFixed(1) + "x";
+        zoomMaxLabel.textContent = zoomMaximum.toFixed(1) + "x";
+
+        const settings = track.getSettings ? track.getSettings() : {};
+        currentZoom = typeof settings.zoom === "number" ? settings.zoom : Math.max(1, zoomMinimum);
+        currentZoom = Math.max(zoomMinimum, Math.min(zoomMaximum, currentZoom));
+        zoomSlider.value = String(currentZoom);
+    } catch (error) {
+        console.log("Zoom capability unavailable:", error);
+        zoomSupported = false;
+    }
+
+    updateZoomUI();
+}
+
+function updateZoomUI() {
+    if (!zoomControls || !zoomSlider || !zoomValue) return;
+    zoomControls.classList.toggle("hidden", !zoomSupported);
+    zoomSlider.disabled = !zoomSupported;
+    zoomValue.textContent = Number(currentZoom).toFixed(1) + "x";
+}
+
+async function applyCameraZoom() {
+    if (!zoomSupported || !currentStream) return;
+
+    const track = currentStream.getVideoTracks()[0];
+    const requestedZoom = Number(zoomSlider.value);
+
+    try {
+        await track.applyConstraints({advanced:[{zoom:requestedZoom}]});
+        const settings = track.getSettings ? track.getSettings() : {};
+        currentZoom = typeof settings.zoom === "number" ? settings.zoom : requestedZoom;
+    } catch (error) {
+        console.error("Camera zoom failed:", error);
+        const settings = track.getSettings ? track.getSettings() : {};
+        if (typeof settings.zoom === "number") currentZoom = settings.zoom;
+    }
+
+    currentZoom = Math.max(zoomMinimum, Math.min(zoomMaximum, currentZoom));
+    zoomSlider.value = String(currentZoom);
+    updateZoomUI();
+}
 
 /* =========================================
    TIMER
@@ -3117,6 +3224,21 @@ timer5Button.addEventListener(
 
 
 /* =========================================
+   ZOOM EVENTS
+========================================= */
+zoomSlider.addEventListener(
+    "input",
+    function () {
+        zoomValue.textContent = Number(zoomSlider.value).toFixed(1) + "x";
+    }
+);
+
+zoomSlider.addEventListener(
+    "change",
+    applyCameraZoom
+);
+
+/* =========================================
    ROTATION EVENTS
 ========================================= */
 
@@ -3167,3 +3289,4 @@ setTimer(0);
 updateShotStatus();
 
 updateCameraLightButton();
+updateZoomUI();

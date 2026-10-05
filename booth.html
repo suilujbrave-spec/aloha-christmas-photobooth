@@ -25,11 +25,21 @@
             <div id="cameraTopControls" class="camera-top-controls hidden">
                 <button id="changeModeButton" class="camera-overlay-button" type="button" aria-label="Switch photo orientation" title="Switch photo orientation">🖼️</button>
                 <button id="switchCameraButton" class="camera-overlay-button" type="button" aria-label="Switch camera" title="Switch camera">🔄</button>
-                <button id="flashButton" class="camera-overlay-button hidden" type="button" aria-label="Camera light off" title="Camera light off">⚡<span id="flashState">OFF</span></button>
+                <button id="flashButton" class="camera-overlay-button hidden" type="button" aria-label="Camera light off" title="Camera light off">💡<span id="flashState">OFF</span></button>
             </div>
 
             <div class="shot-status hidden" id="shotStatus"><span id="shotCount">0 / 10</span><button id="reviewButton" type="button" disabled>Review Photos</button></div>
 
+
+            <div id="zoomControls" class="zoom-controls hidden">
+                <span class="zoom-label">Zoom</span>
+                <div class="zoom-row">
+                    <span id="zoomMinLabel" class="zoom-end">0.5x</span>
+                    <input id="zoomSlider" class="zoom-slider" type="range" min="0.5" max="4" step="0.1" value="1" aria-label="Camera zoom">
+                    <span id="zoomMaxLabel" class="zoom-end">4.0x</span>
+                </div>
+                <strong id="zoomValue">1.0x</strong>
+            </div>
             <div id="cameraBottomControls" class="camera-bottom-controls hidden">
                 <div class="timer-controls">
                     <span class="timer-label">Timer</span>
