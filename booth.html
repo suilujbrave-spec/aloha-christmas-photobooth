@@ -1,471 +1,81 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
-
-    <meta
-        name="viewport"
-        content="width=device-width, initial-scale=1.0, viewport-fit=cover"
-    >
-
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
     <title>Aloha Christmas Photobooth</title>
-
     <link rel="stylesheet" href="booth.css">
 </head>
-
 <body>
+<main class="booth">
+    <section id="modeScreen" class="screen mode-screen">
+        <div class="mode-heading"><h1>Aloha Christmas</h1><p>Choose your photo style</p></div>
+        <div class="mode-options">
+            <button id="portraitModeButton" class="mode-button" type="button"><span class="mode-icon">📱</span><strong>Portrait</strong><small>Best for selfies and small groups</small></button>
+            <button id="landscapeModeButton" class="mode-button" type="button"><span class="mode-icon">🌴</span><strong>Landscape</strong><small>Best for group photos</small></button>
+        </div>
+    </section>
 
-    <main class="booth">
+    <section id="cameraScreen" class="screen hidden">
+        <div class="top-bar"><div><h1>Aloha Christmas</h1><p>Strike a pose!</p></div></div>
+        <div class="camera-container portrait">
+            <video id="camera" autoplay playsinline muted></video>
+            <img id="liveFrame" class="photo-frame" src="frame.png" alt="">
 
-        <!-- =====================================
-             MODE SELECTION
-        ====================================== -->
-
-        <section
-            id="modeScreen"
-            class="screen mode-screen"
-        >
-
-            <div class="mode-heading">
-
-                <h1>Aloha Christmas</h1>
-
-                <p>
-                    Choose your photo style
-                </p>
-
+            <div id="cameraTopControls" class="camera-top-controls hidden">
+                <button id="changeModeButton" class="camera-overlay-button" type="button" aria-label="Switch photo orientation" title="Switch photo orientation">🖼️</button>
+                <button id="switchCameraButton" class="camera-overlay-button" type="button" aria-label="Switch camera" title="Switch camera">🔄</button>
+                <button id="flashButton" class="camera-overlay-button hidden" type="button" aria-label="Flash off" title="Still flash off">⚡<span id="flashState">OFF</span></button>
             </div>
 
+            <div class="shot-status hidden" id="shotStatus"><span id="shotCount">0 / 10</span><button id="reviewButton" type="button" disabled>Review Photos</button></div>
 
-            <div class="mode-options">
-
-                <button
-                    id="portraitModeButton"
-                    class="mode-button"
-                    type="button"
-                >
-
-                    <span class="mode-icon">
-                        📱
-                    </span>
-
-                    <strong>
-                        Portrait
-                    </strong>
-
-                    <small>
-                        Best for selfies and small groups
-                    </small>
-
-                </button>
-
-
-                <button
-                    id="landscapeModeButton"
-                    class="mode-button"
-                    type="button"
-                >
-
-                    <span class="mode-icon">
-                        🌴
-                    </span>
-
-                    <strong>
-                        Landscape
-                    </strong>
-
-                    <small>
-                        Best for group photos
-                    </small>
-
-                </button>
-
-            </div>
-
-        </section>
-
-
-        <!-- =====================================
-             CAMERA SCREEN
-        ====================================== -->
-
-        <section
-            id="cameraScreen"
-            class="screen hidden"
-        >
-
-            <!-- Normal header before camera starts -->
-
-            <div class="top-bar">
-
-                <div>
-
-                    <h1>
-                        Aloha Christmas
-                    </h1>
-
-                    <p>
-                        Strike a pose!
-                    </p>
-
-                </div>
-
-            </div>
-
-
-            <!-- =====================================
-                 CAMERA
-            ====================================== -->
-
-            <div class="camera-container portrait">
-
-
-                <!-- LIVE CAMERA -->
-
-                <video
-                    id="camera"
-                    autoplay
-                    playsinline
-                    muted
-                ></video>
-
-
-                <!-- CANVA FRAME -->
-
-                <img
-                    id="liveFrame"
-                    class="photo-frame"
-                    src="frame.png"
-                    alt=""
-                >
-
-
-                <!-- =================================
-                     TOP CAMERA CONTROLS
-                ================================== -->
-
-                <div
-                    id="cameraTopControls"
-                    class="camera-top-controls hidden"
-                >
-
-                    <!-- Portrait / Landscape -->
-
-                    <button
-                        id="changeModeButton"
-                        class="camera-overlay-button"
-                        type="button"
-                        aria-label="Switch photo orientation"
-                        title="Switch photo orientation"
-                    >
-                        🖼️
-                    </button>
-
-
-                    <!-- Front / Rear -->
-
-                    <button
-                        id="switchCameraButton"
-                        class="camera-overlay-button"
-                        type="button"
-                        aria-label="Switch camera"
-                        title="Switch camera"
-                    >
-                        🔄
-                    </button>
-
-                </div>
-
-
-                <!-- =================================
-                     BOTTOM CAMERA CONTROLS
-                ================================== -->
-
-                <div
-                    id="cameraBottomControls"
-                    class="camera-bottom-controls hidden"
-                >
-
-                    <!-- TIMER -->
-
-                    <div class="timer-controls">
-
-                        <span class="timer-label">
-                            Timer
-                        </span>
-
-
-                        <div class="timer-buttons">
-
-                            <button
-                                id="timerOffButton"
-                                class="timer-button active"
-                                type="button"
-                            >
-                                OFF
-                            </button>
-
-                            <button
-                                id="timer3Button"
-                                class="timer-button"
-                                type="button"
-                            >
-                                3s
-                            </button>
-
-                            <button
-                                id="timer5Button"
-                                class="timer-button"
-                                type="button"
-                            >
-                                5s
-                            </button>
-
-                        </div>
-
+            <div id="cameraBottomControls" class="camera-bottom-controls hidden">
+                <div class="timer-controls">
+                    <span class="timer-label">Timer</span>
+                    <div class="timer-buttons">
+                        <button id="timerOffButton" class="timer-button active" type="button">OFF</button>
+                        <button id="timer3Button" class="timer-button" type="button">3s</button>
+                        <button id="timer5Button" class="timer-button" type="button">5s</button>
                     </div>
-
-
-                    <!-- SHUTTER -->
-
-                    <button
-                        id="captureButton"
-                        class="shutter-button"
-                        type="button"
-                        aria-label="Take photo"
-                        disabled
-                    >
-                        <span></span>
-                    </button>
-
                 </div>
-
-
-                <!-- =================================
-                     COUNTDOWN
-                ================================== -->
-
-                <div
-                    id="countdownOverlay"
-                    class="countdown-overlay hidden"
-                >
-
-                    <span id="countdownNumber"></span>
-
-                </div>
-
-
-                <!-- =================================
-                     OPEN CAMERA
-                ================================== -->
-
-                <div
-                    id="cameraMessage"
-                    class="camera-message"
-                >
-
-                    <p id="cameraMessageText">
-                        Tap below to start the Aloha Christmas camera.
-                    </p>
-
-                    <button
-                        id="startCameraButton"
-                        class="primary-button"
-                        type="button"
-                    >
-                        📷 Open Camera
-                    </button>
-
-                </div>
-
+                <button id="captureButton" class="shutter-button" type="button" aria-label="Take photo" disabled><span></span></button>
             </div>
 
-        </section>
-
-
-        <!-- =====================================
-             PHOTO PREVIEW
-        ====================================== -->
-
-        <section
-            id="previewScreen"
-            class="screen hidden"
-        >
-
-            <div class="preview-heading">
-
-                <h1>
-                    Your Aloha Photo
-                </h1>
-
-                <p>
-                    Looking good? Add it to the party!
-                </p>
-
+            <div id="countdownOverlay" class="countdown-overlay hidden"><span id="countdownNumber"></span></div>
+            <div id="cameraMessage" class="camera-message">
+                <p id="cameraMessageText">Tap below to start the Aloha Christmas camera.</p>
+                <button id="startCameraButton" class="primary-button" type="button">📷 Open Camera</button>
             </div>
+        </div>
+    </section>
 
+    <section id="reviewScreen" class="screen review-screen hidden">
+        <div class="review-heading"><h1>Your Aloha Shots</h1><p>Tap the photos you want to add to the party.</p></div>
+        <div id="reviewGrid" class="review-grid"></div>
+        <div class="review-summary"><strong id="selectedCount">0 selected</strong><span id="reviewHint">Select at least one photo.</span></div>
+        <div id="uploadStatus" class="upload-status hidden"><div class="upload-spinner"></div><span id="uploadStatusText">Uploading...</span></div>
+        <p id="uploadError" class="upload-error hidden"></p>
+        <div id="reviewActions" class="review-actions">
+            <button id="takeMoreButton" class="secondary-button" type="button">📷 Take More Photos</button>
+            <button id="addSelectedButton" class="primary-button party-button" type="button" disabled>☁️ Add Selected to Party</button>
+        </div>
+    </section>
 
-            <div class="preview-container">
+    <section id="successScreen" class="screen success-screen hidden">
+        <div class="success-content">
+            <div class="success-icon">🌺</div>
+            <h1>Mahalo!</h1>
+            <h2 id="successTitle">🎄 Your photos joined the party!</h2>
+            <p id="successMessage">Your selected Aloha Christmas memories were added to the party collection.</p>
+            <div id="successDownloads" class="success-downloads"></div>
+            <div class="success-actions"><button id="takeAnotherButton" class="another-button" type="button">＋ Take Another Set</button></div>
+        </div>
+    </section>
+</main>
 
-                <img
-                    id="photoPreview"
-                    alt="Aloha Christmas photo preview"
-                >
-
-            </div>
-
-
-            <!-- UPLOAD STATUS -->
-
-            <div
-                id="uploadStatus"
-                class="upload-status hidden"
-            >
-
-                <div class="upload-spinner"></div>
-
-                <span id="uploadStatusText">
-                    Uploading your photo...
-                </span>
-
-            </div>
-
-
-            <!-- PREVIEW BUTTONS -->
-
-            <div
-                id="previewActions"
-                class="preview-actions"
-            >
-
-                <button
-                    id="retakeButton"
-                    class="secondary-button"
-                    type="button"
-                >
-                    ↻ Retake
-                </button>
-
-
-                <button
-                    id="addToPartyButton"
-                    class="primary-button party-button"
-                    type="button"
-                >
-                    ☁️ Add to Party
-                </button>
-
-            </div>
-
-
-            <p
-                id="uploadError"
-                class="upload-error hidden"
-            ></p>
-
-        </section>
-
-
-        <!-- =====================================
-             SUCCESS
-        ====================================== -->
-
-        <section
-            id="successScreen"
-            class="screen success-screen hidden"
-        >
-
-            <div class="success-content">
-
-                <div class="success-icon">
-                    🌺
-                </div>
-
-
-                <h1>
-                    Mahalo!
-                </h1>
-
-
-                <h2>
-                    🎄 Your photo joined the party!
-                </h2>
-
-
-                <p>
-                    Your Aloha Christmas memory has been
-                    safely added to the party collection.
-                </p>
-
-
-                <div class="success-preview">
-
-                    <img
-                        id="successPhotoPreview"
-                        alt="Uploaded Aloha Christmas photo"
-                    >
-
-                </div>
-
-
-                <div class="success-actions">
-
-                    <button
-                        id="downloadFramedButton"
-                        class="primary-button"
-                        type="button"
-                    >
-                        📸 Save Framed Photo
-                    </button>
-
-
-                    <button
-                        id="downloadCleanButton"
-                        class="secondary-button"
-                        type="button"
-                    >
-                        🖼️ Save Clean Photo
-                    </button>
-
-
-                    <button
-                        id="takeAnotherButton"
-                        class="another-button"
-                        type="button"
-                    >
-                        ＋ Take Another Photo
-                    </button>
-
-                </div>
-
-            </div>
-
-        </section>
-
-    </main>
-
-
-    <!-- =====================================
-         PHOTO PROCESSING CANVAS
-    ====================================== -->
-
-    <canvas
-        id="photoCanvas"
-        width="1080"
-        height="1920"
-    ></canvas>
-
-
-    <!-- Supabase -->
-
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-
-
-    <!-- Photobooth -->
-
-    <script src="booth.js"></script>
-
+<canvas id="photoCanvas" width="1080" height="1920"></canvas>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="booth.js"></script>
 </body>
-
 </html>
