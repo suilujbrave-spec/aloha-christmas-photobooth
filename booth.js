@@ -40,7 +40,7 @@ const $ =
 
 
 /* =========================================
-   ELEMENTS
+   CAMERA ELEMENTS
 ========================================= */
 
 const camera =
@@ -61,7 +61,6 @@ const reviewScreen =
 const successScreen =
     $("successScreen");
 
-
 const cameraMessage =
     $("cameraMessage");
 
@@ -77,20 +76,29 @@ const switchCameraButton =
 const changeModeButton =
     $("changeModeButton");
 
-
 const portraitModeButton =
     $("portraitModeButton");
 
 const landscapeModeButton =
     $("landscapeModeButton");
 
-
 const captureButton =
     $("captureButton");
 
+const cameraTopControls =
+    $("cameraTopControls");
+
+const cameraBottomControls =
+    $("cameraBottomControls");
+
+const cameraContainer =
+    document.querySelector(
+        ".camera-container"
+    );
+
 
 /* =========================================
-   FLASH
+   CAMERA LIGHT ELEMENTS
 ========================================= */
 
 const flashButton =
@@ -101,14 +109,8 @@ const flashState =
 
 
 /* =========================================
-   CAMERA CONTROLS
+   MULTI-SHOT ELEMENTS
 ========================================= */
-
-const cameraTopControls =
-    $("cameraTopControls");
-
-const cameraBottomControls =
-    $("cameraBottomControls");
 
 const shotStatus =
     $("shotStatus");
@@ -121,7 +123,7 @@ const reviewButton =
 
 
 /* =========================================
-   TIMER
+   TIMER ELEMENTS
 ========================================= */
 
 const timerOffButton =
@@ -141,7 +143,7 @@ const countdownNumber =
 
 
 /* =========================================
-   REVIEW
+   REVIEW ELEMENTS
 ========================================= */
 
 const reviewGrid =
@@ -159,9 +161,12 @@ const takeMoreButton =
 const addSelectedButton =
     $("addSelectedButton");
 
+const reviewActions =
+    $("reviewActions");
+
 
 /* =========================================
-   UPLOAD
+   UPLOAD ELEMENTS
 ========================================= */
 
 const uploadStatus =
@@ -173,12 +178,9 @@ const uploadStatusText =
 const uploadError =
     $("uploadError");
 
-const reviewActions =
-    $("reviewActions");
-
 
 /* =========================================
-   SUCCESS
+   SUCCESS ELEMENTS
 ========================================= */
 
 const successTitle =
@@ -202,20 +204,20 @@ const photoCanvas =
     $("photoCanvas");
 
 const ctx =
-    photoCanvas.getContext("2d");
-
-const cameraContainer =
-    document.querySelector(
-        ".camera-container"
+    photoCanvas.getContext(
+        "2d"
     );
 
 
 /* =========================================
-   STATE
+   CAMERA STATE
 ========================================= */
 
-let OUTPUT_WIDTH = 1080;
-let OUTPUT_HEIGHT = 1920;
+let OUTPUT_WIDTH =
+    1080;
+
+let OUTPUT_HEIGHT =
+    1920;
 
 let photoMode =
     "portrait";
@@ -226,18 +228,28 @@ let facingMode =
 let currentStream =
     null;
 
+
+/* =========================================
+   TIMER STATE
+========================================= */
+
 let timerSeconds =
     0;
 
 let countdownRunning =
     false;
 
+
+/* =========================================
+   UPLOAD STATE
+========================================= */
+
 let uploadRunning =
     false;
 
 
 /* =========================================
-   MULTI SHOT
+   MULTI-SHOT STATE
 ========================================= */
 
 let capturedShots =
@@ -248,23 +260,14 @@ let lastUploadedShots =
 
 
 /* =========================================
-   FLASH STATE
-
-   flashMethod can be:
-
-   "none"
-   "still"
-   "torch"
+   CAMERA LIGHT STATE
 ========================================= */
 
-let flashEnabled =
+let cameraLightEnabled =
     false;
 
-let stillFlashSupported =
+let cameraLightSupported =
     false;
-
-let flashMethod =
-    "none";
 
 
 /* =========================================
@@ -282,6 +285,12 @@ const landscapeOrientation =
 ========================================= */
 
 async function enterCameraFullscreen() {
+
+    /*
+        camera-active gives us the immersive
+        CSS layout even on browsers where
+        true Fullscreen API is unavailable.
+    */
 
     document.body.classList.add(
         "camera-active"
@@ -309,7 +318,7 @@ async function enterCameraFullscreen() {
     } catch (error) {
 
         console.log(
-            "Fullscreen unavailable:",
+            "True fullscreen unavailable:",
             error
         );
 
@@ -351,7 +360,7 @@ async function exitCameraFullscreen() {
 
 
 /* =========================================
-   PORTRAIT
+   PORTRAIT MODE
 ========================================= */
 
 function switchToPortrait() {
@@ -382,6 +391,7 @@ function switchToPortrait() {
         "landscape"
     );
 
+
     cameraContainer.classList.add(
         "portrait"
     );
@@ -392,7 +402,7 @@ function switchToPortrait() {
 
 
 /* =========================================
-   LANDSCAPE
+   LANDSCAPE MODE
 ========================================= */
 
 function switchToLandscape() {
@@ -423,6 +433,7 @@ function switchToLandscape() {
         "portrait"
     );
 
+
     cameraContainer.classList.add(
         "landscape"
     );
@@ -438,6 +449,11 @@ function switchToLandscape() {
 
 function syncPhotoModeWithDevice() {
 
+    /*
+        Do not change the output canvas
+        halfway through a countdown/upload.
+    */
+
     if (
         countdownRunning ||
         uploadRunning
@@ -450,18 +466,32 @@ function syncPhotoModeWithDevice() {
         landscapeOrientation.matches
     ) {
 
-        switchToLandscape();
+        if (
+            photoMode !==
+            "landscape"
+        ) {
+
+            switchToLandscape();
+
+        }
 
     } else {
 
-        switchToPortrait();
+        if (
+            photoMode !==
+            "portrait"
+        ) {
+
+            switchToPortrait();
+
+        }
 
     }
 }
 
 
 /* =========================================
-   MANUAL ORIENTATION SWITCH
+   MANUAL ORIENTATION BUTTON
 ========================================= */
 
 function changePhotoMode() {
@@ -490,7 +520,7 @@ function changePhotoMode() {
 
 
 /* =========================================
-   MODE BUTTON
+   MODE BUTTON ICON
 ========================================= */
 
 function updateModeButton() {
@@ -506,6 +536,11 @@ function updateModeButton() {
         changeModeButton.title =
             "Switch to Landscape";
 
+        changeModeButton.setAttribute(
+            "aria-label",
+            "Switch to Landscape"
+        );
+
 
     } else {
 
@@ -515,12 +550,17 @@ function updateModeButton() {
         changeModeButton.title =
             "Switch to Portrait";
 
+        changeModeButton.setAttribute(
+            "aria-label",
+            "Switch to Portrait"
+        );
+
     }
 }
 
 
 /* =========================================
-   MODE SELECTION
+   INITIAL MODE CHOICE
 ========================================= */
 
 function selectPortraitMode() {
@@ -562,7 +602,7 @@ function selectLandscapeMode() {
 
 
 /* =========================================
-   PREPARE CAMERA
+   PREPARE CAMERA SCREEN
 ========================================= */
 
 function prepareCameraScreen() {
@@ -601,6 +641,9 @@ function prepareCameraScreen() {
     startCameraButton.classList.remove(
         "hidden"
     );
+
+
+    updateShotStatus();
 }
 
 
@@ -642,7 +685,7 @@ async function getCameraStream() {
     updateCameraMirror();
 
 
-    await updateFlashCapability();
+    await updateCameraLightCapability();
 }
 
 
@@ -668,6 +711,21 @@ async function startCamera() {
 
 
     startCameraButton.classList.add(
+        "hidden"
+    );
+
+
+    cameraTopControls.classList.add(
+        "hidden"
+    );
+
+
+    cameraBottomControls.classList.add(
+        "hidden"
+    );
+
+
+    shotStatus.classList.add(
         "hidden"
     );
 
@@ -721,8 +779,30 @@ async function startCamera() {
         );
 
 
-        cameraMessageText.textContent =
-            "The camera could not be started. Please check camera permission and try again.";
+        if (
+            error.name ===
+            "NotAllowedError"
+        ) {
+
+            cameraMessageText.textContent =
+                "Camera access was blocked. Please allow camera access and try again.";
+
+
+        } else if (
+            error.name ===
+            "NotFoundError"
+        ) {
+
+            cameraMessageText.textContent =
+                "No camera was found on this device.";
+
+
+        } else {
+
+            cameraMessageText.textContent =
+                "The camera could not be started. Please check camera permission and try again.";
+
+        }
 
 
         startCameraButton.classList.remove(
@@ -743,22 +823,23 @@ function stopCamera() {
         currentStream
     ) {
 
-        const videoTracks =
+        const tracks =
             currentStream
                 .getVideoTracks();
 
 
         /*
-            Disable torch before closing
-            the camera if necessary.
+            Attempt to turn the light OFF
+            before stopping the camera.
         */
 
         if (
-            flashMethod === "torch" &&
-            videoTracks.length > 0
+            cameraLightEnabled &&
+            tracks.length >
+                0
         ) {
 
-            videoTracks[0]
+            tracks[0]
                 .applyConstraints(
                     {
                         advanced: [
@@ -773,7 +854,8 @@ function stopCamera() {
                     function () {
 
                         /*
-                            Ignore cleanup failure.
+                            Camera is being closed anyway.
+                            No action required.
                         */
 
                     }
@@ -803,19 +885,15 @@ function stopCamera() {
         null;
 
 
-    flashEnabled =
+    cameraLightEnabled =
         false;
 
 
-    stillFlashSupported =
+    cameraLightSupported =
         false;
 
 
-    flashMethod =
-        "none";
-
-
-    updateFlashButton();
+    updateCameraLightButton();
 }
 
 
@@ -826,7 +904,8 @@ function stopCamera() {
 async function switchCamera() {
 
     if (
-        countdownRunning
+        countdownRunning ||
+        uploadRunning
     ) {
         return;
     }
@@ -858,6 +937,16 @@ async function switchCamera() {
 
     cameraMessageText.textContent =
         "Switching camera...";
+
+
+    cameraTopControls.classList.add(
+        "hidden"
+    );
+
+
+    cameraBottomControls.classList.add(
+        "hidden"
+    );
 
 
     try {
@@ -916,7 +1005,7 @@ async function switchCamera() {
 
 
 /* =========================================
-   CAMERA MIRROR
+   SELFIE MIRROR
 ========================================= */
 
 function updateCameraMirror() {
@@ -930,32 +1019,25 @@ function updateCameraMirror() {
 
 
 /* =========================================
-   FLASH CAPABILITY
-
-   Preferred:
-   still photographic flash
-
-   Fallback:
-   LED torch
+   CAMERA LIGHT CAPABILITY
 ========================================= */
 
-async function updateFlashCapability() {
+async function updateCameraLightCapability() {
 
-    stillFlashSupported =
+    cameraLightSupported =
         false;
 
 
-    flashEnabled =
+    cameraLightEnabled =
         false;
-
-
-    flashMethod =
-        "none";
 
 
     /*
-        Flash is intended for the rear
-        camera only.
+        Rear camera only.
+
+        We don't expose Light on the front
+        camera because a physical front LED
+        is normally unavailable.
     */
 
     if (
@@ -964,181 +1046,97 @@ async function updateFlashCapability() {
         !currentStream
     ) {
 
-        updateFlashButton();
+        updateCameraLightButton();
 
         return;
     }
 
 
-    const track =
-        currentStream
-            .getVideoTracks()[0];
+    try {
+
+        const track =
+            currentStream
+                .getVideoTracks()[0];
 
 
-    /* =====================================
-       METHOD 1
-       Dedicated still-photo flash
-    ====================================== */
-
-    if (
-        typeof ImageCapture !==
-        "undefined"
-    ) {
-
-        try {
-
-            const imageCapture =
-                new ImageCapture(
-                    track
-                );
-
-
-            if (
-                typeof imageCapture
-                    .getPhotoCapabilities ===
-                "function"
-            ) {
-
-                const photoCapabilities =
-                    await imageCapture
-                        .getPhotoCapabilities();
-
-
-                console.log(
-                    "Photo capabilities:",
-                    photoCapabilities
-                );
-
-
-                const modes =
-                    Array.isArray(
-                        photoCapabilities
-                            .fillLightMode
-                    )
-                        ? photoCapabilities
-                            .fillLightMode
-                        : [];
-
-
-                if (
-                    modes.includes(
-                        "flash"
-                    )
-                ) {
-
-                    stillFlashSupported =
-                        true;
-
-
-                    flashMethod =
-                        "still";
-
-                }
-
-            }
-
-        } catch (error) {
-
-            console.log(
-                "Still-photo flash detection unavailable:",
-                error
-            );
-
-        }
-
-    }
-
-
-    /* =====================================
-       METHOD 2
-       Torch fallback
-    ====================================== */
-
-    if (
-        flashMethod ===
-            "none" &&
-        typeof track
-            .getCapabilities ===
+        if (
+            typeof track.getCapabilities !==
             "function"
-    ) {
+        ) {
 
-        try {
+            updateCameraLightButton();
 
-            const trackCapabilities =
-                track.getCapabilities();
-
-
-            console.log(
-                "Track capabilities:",
-                trackCapabilities
-            );
-
-
-            /*
-                Different browser engines may
-                expose torch as a boolean or
-                boolean-array style capability.
-
-                Accept both.
-            */
-
-            const torchCapability =
-                trackCapabilities.torch;
-
-
-            const torchSupported =
-                torchCapability ===
-                    true ||
-                (
-                    Array.isArray(
-                        torchCapability
-                    ) &&
-                    torchCapability.includes(
-                        true
-                    )
-                );
-
-
-            if (
-                torchSupported
-            ) {
-
-                stillFlashSupported =
-                    true;
-
-
-                flashMethod =
-                    "torch";
-
-            }
-
-        } catch (error) {
-
-            console.log(
-                "Torch detection unavailable:",
-                error
-            );
-
+            return;
         }
+
+
+        const capabilities =
+            track.getCapabilities();
+
+
+        console.log(
+            "Rear camera capabilities:",
+            capabilities
+        );
+
+
+        const torchCapability =
+            capabilities.torch;
+
+
+        /*
+            Browser implementations can expose
+            this differently.
+
+            Support:
+              true
+
+            or:
+              [false, true]
+        */
+
+        cameraLightSupported =
+            torchCapability ===
+                true ||
+            (
+                Array.isArray(
+                    torchCapability
+                ) &&
+                torchCapability.includes(
+                    true
+                )
+            );
+
+
+        console.log(
+            "Camera light supported:",
+            cameraLightSupported
+        );
+
+
+    } catch (error) {
+
+        console.log(
+            "Camera light detection unavailable:",
+            error
+        );
+
+
+        cameraLightSupported =
+            false;
 
     }
 
 
-    console.log(
-        "Selected flash method:",
-        flashMethod
-    );
-
-
-    updateFlashButton();
+    updateCameraLightButton();
 }
 
 
 /* =========================================
-   FLASH BUTTON UI
+   CAMERA LIGHT BUTTON UI
 ========================================= */
 
-function updateFlashButton() {
+function updateCameraLightButton() {
 
     if (
         !flashButton
@@ -1149,14 +1147,14 @@ function updateFlashButton() {
 
     flashButton.classList.toggle(
         "hidden",
-        !stillFlashSupported
+        !cameraLightSupported
     );
 
 
     flashButton.classList.toggle(
         "active",
-        flashEnabled &&
-        stillFlashSupported
+        cameraLightEnabled &&
+        cameraLightSupported
     );
 
 
@@ -1165,7 +1163,7 @@ function updateFlashButton() {
     ) {
 
         flashState.textContent =
-            flashEnabled
+            cameraLightEnabled
                 ? "ON"
                 : "OFF";
 
@@ -1173,85 +1171,76 @@ function updateFlashButton() {
 
 
     flashButton.title =
-        flashEnabled
-            ? "Still flash on"
-            : "Still flash off";
+        cameraLightEnabled
+            ? "Camera light on"
+            : "Camera light off";
 
 
     flashButton.setAttribute(
         "aria-label",
-        flashEnabled
-            ? "Turn flash off"
-            : "Turn flash on"
+        cameraLightEnabled
+            ? "Turn camera light off"
+            : "Turn camera light on"
     );
 }
 
 
 /* =========================================
-   FLASH ON / OFF
+   CAMERA LIGHT ON / OFF
 ========================================= */
 
-async function toggleFlash() {
+async function toggleCameraLight() {
 
     if (
-        !stillFlashSupported ||
+        !cameraLightSupported ||
         !currentStream
     ) {
         return;
     }
 
 
-    flashEnabled =
-        !flashEnabled;
+    const track =
+        currentStream
+            .getVideoTracks()[0];
 
 
-    /*
-        Torch fallback immediately switches
-        the rear LED on or off.
-    */
-
-    if (
-        flashMethod ===
-        "torch"
-    ) {
-
-        try {
-
-            const track =
-                currentStream
-                    .getVideoTracks()[0];
+    const desiredState =
+        !cameraLightEnabled;
 
 
-            await track
-                .applyConstraints(
+    try {
+
+        await track.applyConstraints(
+            {
+                advanced: [
                     {
-                        advanced: [
-                            {
-                                torch:
-                                    flashEnabled
-                            }
-                        ]
+                        torch:
+                            desiredState
                     }
-                );
+                ]
+            }
+        );
 
 
-        } catch (error) {
-
-            console.error(
-                "Torch control failed:",
-                error
-            );
+        cameraLightEnabled =
+            desiredState;
 
 
-            flashEnabled =
-                false;
+    } catch (error) {
 
-        }
+        console.error(
+            "Camera light control failed:",
+            error
+        );
+
+
+        cameraLightEnabled =
+            false;
 
     }
 
 
-    updateFlashButton();
+    updateCameraLightButton();
 }
 
 
@@ -1339,7 +1328,7 @@ function wait(
 
 
 /* =========================================
-   DISABLE CAMERA CONTROLS
+   CAMERA CONTROLS ENABLE / DISABLE
 ========================================= */
 
 function setCameraControlsDisabled(
@@ -1370,8 +1359,14 @@ function setCameraControlsDisabled(
         disabled;
 
 
-    flashButton.disabled =
-        disabled;
+    if (
+        flashButton
+    ) {
+
+        flashButton.disabled =
+            disabled;
+
+    }
 
 
     reviewButton.disabled =
@@ -1395,8 +1390,13 @@ async function runCountdown() {
     }
 
 
+    /*
+        TIMER OFF
+    */
+
     if (
-        timerSeconds === 0
+        timerSeconds ===
+        0
     ) {
 
         await capturePhoto();
@@ -1453,6 +1453,14 @@ async function runCountdown() {
         await capturePhoto();
 
 
+    } catch (error) {
+
+        console.error(
+            "Countdown error:",
+            error
+        );
+
+
     } finally {
 
         countdownRunning =
@@ -1487,7 +1495,7 @@ async function runCountdown() {
 
 
 /* =========================================
-   DRAW SOURCE AS COVER
+   DRAW SOURCE TO OUTPUT CANVAS
 ========================================= */
 
 function drawSourceCover(
@@ -1573,7 +1581,7 @@ function drawSourceCover(
 
 
 /* =========================================
-   VIDEO FRAME CAPTURE
+   VIDEO FRAME CLEAN CAPTURE
 ========================================= */
 
 function drawVideoClean() {
@@ -1585,6 +1593,11 @@ function drawVideoClean() {
         OUTPUT_HEIGHT
     );
 
+
+    /*
+        Mirror front camera so the saved
+        photo matches the live selfie preview.
+    */
 
     if (
         facingMode ===
@@ -1629,7 +1642,7 @@ function drawVideoClean() {
 
 
 /* =========================================
-   CANVAS → JPEG
+   CANVAS TO JPEG
 ========================================= */
 
 function canvasToBlob() {
@@ -1649,7 +1662,7 @@ function canvasToBlob() {
 
 
 /* =========================================
-   WAIT FOR FRAME
+   WAIT FOR FRAME ASSET
 ========================================= */
 
 function waitForFrame() {
@@ -1728,20 +1741,39 @@ function waitForFrame() {
 
 
 /* =========================================
-   STILL PHOTO CAPTURE
+   REAR CAMERA STILL PHOTO
 
    Preferred:
    ImageCapture.takePhoto()
 
    Fallback:
-   video frame → canvas
+   Video frame → Canvas
 ========================================= */
 
-async function drawStillCleanIfAvailable() {
+async function drawBestCleanPhoto() {
+
+    /*
+        Front camera stays on the proven
+        video-frame capture because we need
+        the selfie mirror behavior.
+    */
 
     if (
         facingMode !==
-            "environment" ||
+        "environment"
+    ) {
+
+        drawVideoClean();
+
+        return;
+    }
+
+
+    /*
+        Browser has no ImageCapture API.
+    */
+
+    if (
         typeof ImageCapture ===
             "undefined" ||
         !currentStream
@@ -1766,38 +1798,17 @@ async function drawStillCleanIfAvailable() {
             );
 
 
-        const photoSettings =
-            {};
-
-
         /*
-            Dedicated photographic flash.
-        */
+            Camera Light is independent of
+            takePhoto().
 
-        if (
-            flashMethod ===
-            "still"
-        ) {
-
-            photoSettings.fillLightMode =
-                flashEnabled
-                    ? "flash"
-                    : "off";
-
-        }
-
-
-        /*
-            With flashMethod === "torch",
-            LED state has already been
-            controlled by toggleFlash().
+            If Light is ON, the LED is
+            already illuminated.
         */
 
         const photoBlob =
             await imageCapture
-                .takePhoto(
-                    photoSettings
-                );
+                .takePhoto();
 
 
         const bitmap =
@@ -1827,7 +1838,7 @@ async function drawStillCleanIfAvailable() {
     } catch (error) {
 
         console.log(
-            "Still capture fallback:",
+            "High-quality still capture unavailable. Using video frame:",
             error
         );
 
@@ -1895,7 +1906,19 @@ async function capturePhoto() {
         !camera.videoWidth ||
         !camera.videoHeight
     ) {
+
         return;
+
+    }
+
+
+    if (
+        capturedShots.length >=
+        MAX_SHOTS
+    ) {
+
+        return;
+
     }
 
 
@@ -1912,7 +1935,7 @@ async function capturePhoto() {
            CLEAN PHOTO
         ================================= */
 
-        await drawStillCleanIfAvailable();
+        await drawBestCleanPhoto();
 
 
         const cleanBlob =
@@ -1931,15 +1954,19 @@ async function capturePhoto() {
 
 
         /* =================================
-           FRAME
+           ADD FRAME
         ================================= */
 
         ctx.drawImage(
+
             liveFrame,
+
             0,
             0,
+
             OUTPUT_WIDTH,
             OUTPUT_HEIGHT
+
         );
 
 
@@ -1959,7 +1986,7 @@ async function capturePhoto() {
 
 
         /* =================================
-           ADD SHOT
+           CREATE SHOT
         ================================= */
 
         const shot = {
@@ -1987,26 +2014,28 @@ async function capturePhoto() {
         );
 
 
-        /*
-            Automatically attempt to save
-            the clean original.
-        */
+        /* =================================
+           AUTOMATIC CLEAN DOWNLOAD
+        ================================= */
 
         attemptCleanDownload(
             shot
         );
 
 
+        /* =================================
+           UPDATE UI
+        ================================= */
+
         updateShotStatus();
 
 
-        flashCaptureEffect();
+        showCaptureAnimation();
 
 
-        /*
-            Automatically open review at
-            MAX_SHOTS.
-        */
+        /* =================================
+           MAX SHOTS REACHED
+        ================================= */
 
         if (
             capturedShots.length >=
@@ -2043,10 +2072,10 @@ async function capturePhoto() {
 
 
 /* =========================================
-   VISUAL CAPTURE FLASH
+   CAPTURE ANIMATION
 ========================================= */
 
-function flashCaptureEffect() {
+function showCaptureAnimation() {
 
     if (
         !cameraContainer.animate
@@ -2083,7 +2112,7 @@ function flashCaptureEffect() {
 
 
 /* =========================================
-   SHOT STATUS
+   SHOT COUNTER
 ========================================= */
 
 function updateShotStatus() {
@@ -2150,7 +2179,7 @@ async function openReview() {
 
 
 /* =========================================
-   REVIEW GRID
+   RENDER REVIEW
 ========================================= */
 
 function renderReview() {
@@ -2176,18 +2205,30 @@ function renderReview() {
 
 
             button.className =
-                "review-shot " +
-                (
-                    shot.mode ===
+                "review-shot";
+
+
+            if (
+                shot.mode ===
+                "landscape"
+            ) {
+
+                button.classList.add(
                     "landscape"
-                        ? "landscape "
-                        : ""
-                ) +
-                (
-                    shot.selected
-                        ? "selected"
-                        : ""
                 );
+
+            }
+
+
+            if (
+                shot.selected
+            ) {
+
+                button.classList.add(
+                    "selected"
+                );
+
+            }
 
 
             const image =
@@ -2232,8 +2273,12 @@ function renderReview() {
                     : "○";
 
 
-            button.append(
-                image,
+            button.appendChild(
+                image
+            );
+
+
+            button.appendChild(
                 check
             );
 
@@ -2262,7 +2307,7 @@ function renderReview() {
     );
 
 
-    const count =
+    const totalSelected =
         capturedShots.filter(
             function (shot) {
 
@@ -2273,20 +2318,22 @@ function renderReview() {
 
 
     selectedCount.textContent =
-        count +
+        totalSelected +
         (
-            count === 1
+            totalSelected === 1
                 ? " selected"
                 : " selected"
         );
 
 
     if (
-        count > 0
+        totalSelected >
+        0
     ) {
 
         reviewHint.textContent =
             "Only selected photos will be added to the party.";
+
 
     } else {
 
@@ -2297,7 +2344,7 @@ function renderReview() {
 
 
     addSelectedButton.disabled =
-        count === 0 ||
+        totalSelected === 0 ||
         uploadRunning;
 
 
@@ -2308,12 +2355,13 @@ function renderReview() {
 
 
     if (
-        count > 0
+        totalSelected >
+        0
     ) {
 
         addSelectedButton.textContent =
             "☁️ Add " +
-            count +
+            totalSelected +
             " Selected to Party";
 
 
@@ -2332,6 +2380,14 @@ function renderReview() {
 
 async function takeMorePhotos() {
 
+    if (
+        capturedShots.length >=
+        MAX_SHOTS
+    ) {
+        return;
+    }
+
+
     reviewScreen.classList.add(
         "hidden"
     );
@@ -2340,6 +2396,9 @@ async function takeMorePhotos() {
     cameraScreen.classList.remove(
         "hidden"
     );
+
+
+    syncPhotoModeWithDevice();
 
 
     await startCamera();
@@ -2367,7 +2426,7 @@ async function uploadShot(
 
 
     /* =====================================
-       CLEAN
+       CLEAN PHOTO
     ====================================== */
 
     let result =
@@ -2402,7 +2461,7 @@ async function uploadShot(
 
 
     /* =====================================
-       FRAMED
+       FRAMED PHOTO
     ====================================== */
 
     result =
@@ -2437,7 +2496,7 @@ async function uploadShot(
 
 
     /* =====================================
-       DATABASE
+       DATABASE RECORD
     ====================================== */
 
     result =
@@ -2447,6 +2506,7 @@ async function uploadShot(
             )
             .insert(
                 {
+
                     capture_id:
                         shot.id,
 
@@ -2461,6 +2521,7 @@ async function uploadShot(
 
                     status:
                         "pending"
+
                 }
             );
 
@@ -2476,7 +2537,7 @@ async function uploadShot(
 
 
 /* =========================================
-   ADD SELECTED TO PARTY
+   ADD SELECTED PHOTOS
 ========================================= */
 
 async function addSelectedToParty() {
@@ -2605,7 +2666,7 @@ async function addSelectedToParty() {
 
 
 /* =========================================
-   AUTOMATIC CLEAN DOWNLOAD
+   AUTO SAVE CLEAN PHOTO
 ========================================= */
 
 function attemptCleanDownload(
@@ -2615,16 +2676,19 @@ function attemptCleanDownload(
     try {
 
         downloadBlob(
+
             shot.cleanBlob,
+
             shot.id +
             "_clean.jpg"
+
         );
 
 
     } catch (error) {
 
         console.log(
-            "Automatic clean download was blocked:",
+            "Automatic clean download blocked:",
             error
         );
 
@@ -2710,18 +2774,26 @@ function showSuccessScreen() {
         lastUploadedShots.length;
 
 
-    successTitle.textContent =
-        "🎄 " +
-        total +
-        (
-            total === 1
-                ? " photo joined the party!"
-                : " photos joined the party!"
-        );
+    if (
+        total === 1
+    ) {
+
+        successTitle.textContent =
+            "🎄 1 photo joined the party!";
+
+
+    } else {
+
+        successTitle.textContent =
+            "🎄 " +
+            total +
+            " photos joined the party!";
+
+    }
 
 
     successMessage.textContent =
-        "Clean photos were automatically offered for saving. Use the buttons below if your browser blocked any download.";
+        "Your clean photos were automatically offered for saving. Use the buttons below if your browser blocked a download.";
 
 
     successDownloads.innerHTML =
@@ -2813,9 +2885,12 @@ function showSuccessScreen() {
                 function () {
 
                     downloadBlob(
+
                         shot.cleanBlob,
+
                         shot.id +
                         "_clean.jpg"
+
                     );
 
                 }
@@ -2841,9 +2916,12 @@ function showSuccessScreen() {
                 function () {
 
                     downloadBlob(
+
                         shot.framedBlob,
+
                         shot.id +
                         "_framed.jpg"
+
                     );
 
                 }
@@ -2892,7 +2970,7 @@ function showSuccessScreen() {
 
 
 /* =========================================
-   TAKE ANOTHER SET
+   NEW SESSION
 ========================================= */
 
 async function takeAnotherSet() {
@@ -2914,15 +2992,15 @@ async function takeAnotherSet() {
         false;
 
 
+    updateShotStatus();
+
+
     syncPhotoModeWithDevice();
 
 
     cameraScreen.classList.remove(
         "hidden"
     );
-
-
-    updateShotStatus();
 
 
     await startCamera();
@@ -2963,9 +3041,14 @@ switchCameraButton.addEventListener(
 );
 
 
+/*
+    Existing HTML ID remains flashButton,
+    but the feature is now Camera Light.
+*/
+
 flashButton.addEventListener(
     "click",
-    toggleFlash
+    toggleCameraLight
 );
 
 
@@ -3034,18 +3117,26 @@ timer5Button.addEventListener(
 
 
 /* =========================================
-   DEVICE ROTATION
+   ROTATION EVENTS
 ========================================= */
 
 landscapeOrientation.addEventListener(
     "change",
-    syncPhotoModeWithDevice
+    function () {
+
+        syncPhotoModeWithDevice();
+
+    }
 );
 
 
 window.addEventListener(
     "resize",
-    syncPhotoModeWithDevice
+    function () {
+
+        syncPhotoModeWithDevice();
+
+    }
 );
 
 
@@ -3075,4 +3166,4 @@ setTimer(0);
 
 updateShotStatus();
 
-updateFlashButton();
+updateCameraLightButton();
