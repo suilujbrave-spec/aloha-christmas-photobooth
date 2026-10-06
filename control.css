@@ -678,3 +678,10 @@ body {
 }
 
 .backup-live-status{margin-top:12px;display:inline-flex;align-items:center;gap:7px;padding:7px 10px;border-radius:999px;font-size:.72rem;font-weight:800}.backup-status-dot{width:8px;height:8px;border-radius:50%;background:currentColor}.backup-online{color:#7ff0c3;background:rgba(40,190,130,.12)}.backup-offline{color:#ffd8a8;background:rgba(255,155,60,.10)}
+
+/* =========================================
+   UTILITY VISIBILITY
+========================================= */
+.hidden {
+    display: none !important;
+}
