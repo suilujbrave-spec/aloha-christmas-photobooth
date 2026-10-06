@@ -262,6 +262,44 @@
 
                 </div>
 
+
+
+                <!-- PHOTO BACKUP -->
+
+                <div
+                    class="control-card tool-card backup-card"
+                    role="button"
+                    tabindex="0"
+                    onclick="showBackupInstructions()"
+                    onkeydown="if(event.key==='Enter'){showBackupInstructions()}"
+                >
+
+                    <div class="card-icon">
+                        💾
+                    </div>
+
+                    <div class="card-content">
+
+                        <h3>
+                            Photo Backup
+                        </h3>
+
+                        <p>
+                            Archive verified Supabase photos to the laptop
+                            and SharePoint sync folder.
+                        </p>
+
+                        <span class="card-note">
+                            Windows Backup Manager V2
+                        </span>
+
+                    </div>
+
+                    <div class="card-arrow">
+                        ›
+                    </div>
+
+                </div>
             </div>
 
         </section>
@@ -351,6 +389,31 @@
 
                 </div>
 
+
+
+                <div class="workflow-arrow">
+                    →
+                </div>
+
+                <div class="workflow-step">
+
+                    <span class="step-number">
+                        4
+                    </span>
+
+                    <div class="step-content">
+
+                        <span class="step-icon">
+                            💾
+                        </span>
+
+                        <strong>
+                            Backup Archive
+                        </strong>
+
+                    </div>
+
+                </div>
             </div>
 
         </section>
@@ -377,6 +440,37 @@
         </footer>
 
     </main>
+
+
+
+    <div id="backupModal" class="backup-modal hidden" role="dialog" aria-modal="true" aria-labelledby="backupModalTitle">
+        <div class="backup-modal-card">
+            <button class="backup-modal-close" type="button" onclick="closeBackupInstructions()" aria-label="Close">×</button>
+            <div class="backup-modal-icon">💾</div>
+            <h2 id="backupModalTitle">Photo Backup Manager</h2>
+            <p>The backup utility runs locally on the event laptop and cannot be launched directly by GitHub Pages.</p>
+            <div class="backup-path">C:\AlohaBackupUtility\start-backup.bat</div>
+            <ol>
+                <li>Open <strong>C:\AlohaBackupUtility</strong> in File Explorer.</li>
+                <li>Double-click <strong>start-backup.bat</strong>.</li>
+                <li>Use <strong>Start Automatic Mode</strong> during the event.</li>
+                <li>Keep OneDrive showing <strong>Up to date</strong>.</li>
+            </ol>
+            <button class="backup-modal-action" type="button" onclick="closeBackupInstructions()">Got it</button>
+        </div>
+    </div>
+
+    <script>
+        function showBackupInstructions() {
+            document.getElementById('backupModal').classList.remove('hidden');
+        }
+        function closeBackupInstructions() {
+            document.getElementById('backupModal').classList.add('hidden');
+        }
+        document.addEventListener('keydown', function (event) {
+            if (event.key === 'Escape') closeBackupInstructions();
+        });
+    </script>
 
 </body>
 
