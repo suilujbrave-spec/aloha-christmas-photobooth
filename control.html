@@ -270,8 +270,8 @@
                     class="control-card tool-card backup-card"
                     role="button"
                     tabindex="0"
-                    onclick="showBackupInstructions()"
-                    onkeydown="if(event.key==='Enter'){showBackupInstructions()}"
+                    onclick="openBackupDashboard()"
+                    onkeydown="if(event.key==='Enter'){openBackupDashboard()}"
                 >
 
                     <div class="card-icon">
@@ -290,8 +290,13 @@
                         </p>
 
                         <span class="card-note">
-                            Windows Backup Manager V2
+                            Windows Backup Manager V3
                         </span>
+
+                        <div id="backupLiveStatus" class="backup-live-status backup-offline">
+                            <span class="backup-status-dot"></span>
+                            <span id="backupStatusText">Local status: checking...</span>
+                        </div>
 
                     </div>
 
@@ -453,7 +458,7 @@
             <ol>
                 <li>Open <strong>C:\AlohaBackupUtility</strong> in File Explorer.</li>
                 <li>Double-click <strong>start-backup.bat</strong>.</li>
-                <li>Use <strong>Start Automatic Mode</strong> during the event.</li>
+                <li>Use <strong>Start Automatic Mode</strong> during the event.</li><li>Local dashboard: <strong>http://127.0.0.1:8765/</strong></li>
                 <li>Keep OneDrive showing <strong>Up to date</strong>.</li>
             </ol>
             <button class="backup-modal-action" type="button" onclick="closeBackupInstructions()">Got it</button>
@@ -461,15 +466,50 @@
     </div>
 
     <script>
+        const BACKUP_DASHBOARD_URL = 'http://127.0.0.1:8765/';
+
         function showBackupInstructions() {
             document.getElementById('backupModal').classList.remove('hidden');
         }
+
         function closeBackupInstructions() {
             document.getElementById('backupModal').classList.add('hidden');
         }
+
+        function openBackupDashboard() {
+            const opened = window.open(BACKUP_DASHBOARD_URL, '_blank');
+            if (!opened) showBackupInstructions();
+        }
+
+        async function refreshBackupStatus() {
+            const wrap = document.getElementById('backupLiveStatus');
+            const text = document.getElementById('backupStatusText');
+            try {
+                const controller = new AbortController();
+                const timer = setTimeout(() => controller.abort(), 1600);
+                const response = await fetch('http://127.0.0.1:8765/api/status', {
+                    cache: 'no-store',
+                    signal: controller.signal
+                });
+                clearTimeout(timer);
+                if (!response.ok) throw new Error('status unavailable');
+                const status = await response.json();
+                wrap.classList.remove('backup-offline');
+                wrap.classList.add('backup-online');
+                text.textContent = `Online • Auto ${status.auto_active ? 'ON' : 'OFF'} • ${status.verified} verified • ${status.free_disk_gb.toFixed(0)} GB free`;
+            } catch (error) {
+                wrap.classList.remove('backup-online');
+                wrap.classList.add('backup-offline');
+                text.textContent = 'Local Backup Manager offline • Click to open';
+            }
+        }
+
         document.addEventListener('keydown', function (event) {
             if (event.key === 'Escape') closeBackupInstructions();
         });
+
+        refreshBackupStatus();
+        setInterval(refreshBackupStatus, 10000);
     </script>
 
 </body>
